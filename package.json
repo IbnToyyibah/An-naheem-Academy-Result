@@ -1,0 +1,20 @@
+{
+  "name": "junior-result-management-portal",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "install:all": "npm install --workspaces",
+    "start": "npm run start --workspace backend",
+    "build": "npm run build --workspace frontend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "dependencies": {
+    "framer-motion": "^12.42.1",
+    "react-icons": "^5.7.0"
+  }
+}
