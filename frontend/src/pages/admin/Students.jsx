@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from 'react';
 import { Plus, Search, Trash2, Upload, Edit } from 'lucide-react';
 import { api, assetUrl } from '../../services/api.js';
@@ -203,9 +204,9 @@ export default function Students() {
               <tbody>
                 {filtered.map((student) => (
                   <tr key={student.id}>
-                    <td data-label="Student" className="flex min-w-0 items-center gap-2.5 font-extrabold max-[760px]:grid"><span className="flex min-w-0 items-center gap-2.5">{student.passport_path && <img className="h-9 w-9 rounded-lg object-cover" src={assetUrl(student.passport_path)} alt="" />}<span className="min-w-0 break-words">{student.first_name} {student.last_name}</span></span></td>
-                    <td data-label="Admission">{student.admission_number}</td>
-                    <td data-label="Class">{student.class_name}</td>
+                    <td data-label="Student" className="flex min-w-0 items-center gap-2 font-semibold text-sm max-[760px]:grid"><span className="flex min-w-0 items-center gap-2">{student.passport_path && <img className="h-8 w-8 rounded-lg object-cover" src={assetUrl(student.passport_path)} alt="" />}<span className="min-w-0 break-words">{student.first_name} {student.last_name}</span></span></td>
+                    <td data-label="Admission" className="text-sm">{student.admission_number}</td>
+                    <td data-label="Class" className="text-sm">{student.class_name}</td>
                     <td data-label="Actions" className="max-[760px]:flex max-[760px]:justify-end max-[760px]:pt-1">
                       <div className="flex items-center gap-2">
                         <button className={`${iconButton} text-primary`} onClick={() => edit(student.id)} aria-label="Edit student"><Edit size={16} /></button>
