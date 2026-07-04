@@ -29,7 +29,7 @@ npm run dev
 ```
 
 - Frontend: `http://localhost:5173`
-- Backend: `http://localhost:5000`
+- Backend (production): `https://an-naheem-academy-result-backend.onrender.com` — set VITE_API_URL and VITE_FILE_URL in Vercel to point to this URL
 
 ## Default Admin
 

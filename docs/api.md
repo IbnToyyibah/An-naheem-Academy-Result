@@ -1,8 +1,8 @@
-# API Endpoint Documentation
+﻿# API Endpoint Documentation
 
-Base URL: `http://localhost:5000/api`
+Base URL: `https://an-naheem-academy-result-backend.onrender.com`
 
-Private endpoints require `Authorization: Bearer <token>`.
+Private endpoints require Authorization: Bearer <token>.
 
 ## Authentication
 
@@ -58,3 +58,4 @@ Private endpoints require `Authorization: Bearer <token>`.
 ```
 
 The API validates CA and exam limits, then calculates `total`, `grade`, and `remark`.
+
