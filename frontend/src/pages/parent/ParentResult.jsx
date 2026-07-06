@@ -102,63 +102,86 @@ export default function ParentResult() {
 
   return (
     <motion.div
-      className="glass p-6 rounded-xl shadow-lg max-w-5xl mx-auto"
+      className="p-5 rounded-2xl border border-line bg-panel shadow-panel max-w-5xl mx-auto max-[760px]:p-4 max-[520px]:p-3"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="print-header">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <img src="/Annaheem.jpeg.png" alt="Annaheem Academy logo" style={{ height: 72 }} />
+      <div className="print-header hidden border-b-2 border-slate-900 pb-4 mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <img src="/Annaheem.jpeg.png" alt="Annaheem Academy logo" className="h-16 w-16 object-contain" />
             <div>
-              <div className="text-xl font-bold">Annaheem Academy</div>
-              <div className="text-sm">Result Sheet</div>
+              <h1 className="text-xl font-black tracking-tight text-slate-900 m-0 uppercase leading-none">AN-NAHEEM ACADEMY</h1>
+              <p className="text-xs font-semibold text-slate-600 m-0 mt-1">Knowledge, Discipline & Excellence</p>
+              <p className="text-[10px] text-slate-400 m-0 mt-0.5">Junior Secondary School Portal</p>
             </div>
           </div>
-          <div className="flex flex-col items-start gap-4 text-left sm:items-end sm:text-right">
-            {profile && (
-              <div>
-                <div className="font-semibold text-lg">{profile.first_name} {profile.last_name}</div>
-                <div className="text-sm">{profile.admissionNumber || profile.admission_number}</div>
-                <div className="text-sm">{profile.class_name || 'Class N/A'}</div>
-              </div>
-            )}
-            {profile && profile.passport_path && (
-              <img src={assetUrl(profile.passport_path)} alt="Passport" style={{ height: 72, borderRadius: '8px' }} />
+          <div className="text-right">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider m-0">TERM RESULT SHEET</h2>
+            <p className="text-[11px] text-slate-600 m-0 mt-1">
+              Session: <span className="font-semibold text-slate-900">{lookups.sessions.find(s => String(s.id) === String(filters.sessionId))?.session_name || 'N/A'}</span>
+            </p>
+            <p className="text-[11px] text-slate-600 m-0">
+              Term: <span className="font-semibold text-slate-900">{lookups.terms.find(t => String(t.id) === String(filters.termId))?.term_name || 'N/A'}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Student details grid */}
+        <div className="mt-4 grid grid-cols-4 gap-4 border-t border-slate-300 py-3 text-xs">
+          <div>
+            <span className="block text-slate-500 uppercase text-[9px] font-bold">Student Name</span>
+            <span className="font-bold text-slate-900">{profile?.first_name} {profile?.last_name}</span>
+          </div>
+          <div>
+            <span className="block text-slate-500 uppercase text-[9px] font-bold">Admission Number</span>
+            <span className="font-bold text-slate-900">{profile?.admissionNumber || profile?.admission_number}</span>
+          </div>
+          <div>
+            <span className="block text-slate-500 uppercase text-[9px] font-bold">Class / Stream</span>
+            <span className="font-bold text-slate-900">{profile?.class_name || 'N/A'} {profile?.stream ? `(${profile.stream})` : ''}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="block text-slate-500 uppercase text-[9px] font-bold">Gender</span>
+              <span className="font-bold text-slate-900 capitalize">{profile?.gender || 'N/A'}</span>
+            </div>
+            {profile?.passport_path && (
+              <img src={assetUrl(profile.passport_path)} alt="Passport" className="h-10 w-10 rounded object-cover border border-slate-200" />
             )}
           </div>
         </div>
       </div>
-      <header className="page-title flex flex-col items-start mb-4 no-print">
-        <h1 className="text-3xl font-bold text-primary">View Result</h1>
+      <header className="page-title flex flex-col items-start mb-3.5 no-print">
+        <h1 className="text-xl font-bold text-primary max-[760px]:text-lg">View Result</h1>
         {profile && (
-          <div className="flex items-center gap-4 mt-2">
+          <div className="flex items-center gap-3 mt-2">
             {profile.passport_path && (
               <img
                 src={assetUrl(profile.passport_path)}
                 alt="Passport"
-                className="h-16 w-16 rounded-full object-cover border border-line"
+                className="h-12 w-12 rounded-full object-cover border border-line"
               />
             )}
             <div>
-              <p className="font-semibold">{profile.first_name} {profile.last_name}</p>
-              <p className="text-sm text-muted">{profile.admissionNumber || profile.admission_number}</p>
-              {profile.gender && <p className="text-sm text-muted">Gender: {profile.gender}</p>}
+              <p className="font-bold text-sm">{profile.first_name} {profile.last_name}</p>
+              <p className="text-xs text-muted">{profile.admissionNumber || profile.admission_number}</p>
+              {profile.gender && <p className="text-xs text-muted">Gender: {profile.gender}</p>}
             </div>
           </div>
         )}
-        <button className="primary flex items-center gap-2 mt-2" onClick={() => window.print()}>
+        <button className="primary flex items-center gap-2 mt-2 px-3 py-2 text-xs font-bold rounded-lg" onClick={() => window.print()}>
           <Printer size={12} /> Print
         </button>
       </header>
 
-      <div className="panel form flex flex-col gap-4 mb-6 no-print">
-        <div className="grid gap-4 md:grid-cols-2">
+      <div className="panel form flex flex-col gap-3 mb-5 no-print p-4">
+        <div className="grid gap-3 md:grid-cols-2">
           <select
             value={filters.sessionId}
             onChange={(e) => { if (!selectorsDisabled) setFilters((prev) => ({ ...prev, sessionId: e.target.value })); }}
-            className={`border rounded p-3 ${selectorsDisabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`border rounded-lg py-2 px-3 text-sm ${selectorsDisabled ? 'opacity-60 cursor-not-allowed' : ''}`}
             disabled={selectorsDisabled}
           >
             {lookups.sessions.map((item) => (
@@ -170,7 +193,7 @@ export default function ParentResult() {
           <select
             value={filters.termId}
             onChange={(e) => { if (!selectorsDisabled) setFilters((prev) => ({ ...prev, termId: e.target.value })); }}
-            className={`border rounded p-3 ${selectorsDisabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`border rounded-lg py-2 px-3 text-sm ${selectorsDisabled ? 'opacity-60 cursor-not-allowed' : ''}`}
             disabled={selectorsDisabled}
           >
             {lookups.terms.map((item) => (
@@ -182,18 +205,18 @@ export default function ParentResult() {
         </div>
 
         {selectorsDisabled && (
-          <p className="text-sm text-slate-500 mt-2">Session and term are locked by the school for this result.</p>
+          <p className="text-xs text-slate-500 mt-1">Session and term are locked by the school for this result.</p>
         )}
       </div>
 
-      <section className="panel">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
-          <h2 className="text-2xl font-semibold">Result Sheet</h2>
-          {loading && <span className="text-sm text-slate-500">Loading...</span>}
+      <section className="panel p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3.5">
+          <h2 className="text-base font-bold text-slate-800">Result Sheet</h2>
+          {loading && <span className="text-xs text-slate-500">Loading...</span>}
         </div>
-        {message && <p className="mb-4 rounded-[20px] border border-red-200 bg-red-50 p-4 text-sm text-red-700">{message}</p>}
+        {message && <p className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700">{message}</p>}
 
-        <div className="responsive-table overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
+        <div className="responsive-table overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-sm text-slate-700">
             <thead className="bg-slate-50 text-slate-500 uppercase tracking-[0.12em] text-[11px]">
               <tr>
@@ -233,28 +256,40 @@ export default function ParentResult() {
         )}
       </section>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-6">
-        <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
-          <p className="text-sm text-slate-500">Total Score</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{result.summary.totalScore || 0}</p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-5 print:grid-cols-4 print:gap-3">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 print:p-2.5">
+          <p className="text-xs text-slate-500 print:text-[10px]">Total Score</p>
+          <p className="mt-1.5 text-lg font-bold text-slate-900 print:text-sm print:mt-1">{result.summary.totalScore || 0}</p>
         </div>
-        <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
-          <p className="text-sm text-slate-500">Average Score</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{result.summary.averageScore || 0}</p>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 print:p-2.5">
+          <p className="text-xs text-slate-500 print:text-[10px]">Average Score</p>
+          <p className="mt-1.5 text-lg font-bold text-slate-900 print:text-sm print:mt-1">{result.summary.averageScore || 0}</p>
         </div>
-        <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
-          <p className="text-sm text-slate-500">Position</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{result.summary.position || 'Pending'}</p>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 print:p-2.5">
+          <p className="text-xs text-slate-500 print:text-[10px]">Position</p>
+          <p className="mt-1.5 text-lg font-bold text-slate-900 print:text-sm print:mt-1">{result.summary.position || 'Pending'}</p>
         </div>
-        <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
-          <p className="text-sm text-slate-500">Attendance</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{result.summary.attendance || 'Pending'}</p>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 print:p-2.5">
+          <p className="text-xs text-slate-500 print:text-[10px]">Attendance</p>
+          <p className="mt-1.5 text-lg font-bold text-slate-900 print:text-sm print:mt-1">{result.summary.attendance || 'Pending'}</p>
         </div>
       </div>
 
-      <p className="mt-6 text-sm text-slate-500">
-        Principal's Remark: <span className="font-semibold text-slate-900">{result.summary.principalRemark || 'Pending'}</span>
+      <p className="mt-5 text-xs text-slate-500 print:mt-4 print:text-[11px] print:text-slate-700">
+        Principal's Remark: <span className="font-bold text-slate-900">{result.summary.principalRemark || 'Pending'}</span>
       </p>
+
+      {/* Signature Section for Print */}
+      <div className="hidden print:flex mt-12 justify-between gap-12 text-xs">
+        <div className="flex flex-col items-center">
+          <div className="w-40 border-b border-slate-900 h-8" />
+          <span className="mt-1.5 font-bold text-slate-700">Class Teacher's Signature</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="w-40 border-b border-slate-900 h-8" />
+          <span className="mt-1.5 font-bold text-slate-700">Principal's Signature</span>
+        </div>
+      </div>
     </motion.div>
   );
 }

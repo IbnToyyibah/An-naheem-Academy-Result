@@ -46,63 +46,63 @@ export default function ParentDashboard() {
   }, [user]);
 
   return (
-    <section className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900">Parent Dashboard</h1>
-        <p className="text-sm text-slate-500">Access your child’s profile, class, and exam result information.</p>
+    <section className="space-y-4">
+      <header className="space-y-1.5">
+        <h1 className="text-2xl max-[760px]:text-xl font-bold text-slate-900">Parent Dashboard</h1>
+        <p className="text-xs text-slate-500">Access your child’s profile, class, and exam result information.</p>
       </header>
 
       {loading ? (
-        <div className="rounded-[28px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-slate-500">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
           Loading student information...
         </div>
       ) : message ? (
-        <div className="rounded-[28px] border border-red-200 bg-red-50 p-6 text-center text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-center text-red-700">
           {message}
         </div>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-4">
+        <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-center gap-3.5">
               {profile?.passport_path ? (
                 <img
                   src={assetUrl(profile.passport_path)}
                   alt="Student passport"
-                  className="h-24 w-24 rounded-[24px] object-cover border border-slate-200"
+                  className="h-16 w-16 rounded-xl object-cover border border-slate-200"
                 />
               ) : (
-                <div className="grid h-24 w-24 place-items-center rounded-[24px] bg-slate-200 text-3xl font-bold text-slate-700">
+                <div className="grid h-16 w-16 place-items-center rounded-xl bg-slate-200 text-xl font-bold text-slate-700">
                   {profile?.first_name?.[0] || 'S'}
                 </div>
               )}
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Student</p>
-                <h2 className="text-2xl font-bold text-slate-900">{profile?.first_name} {profile?.last_name}</h2>
-                <p className="text-sm text-slate-500">{profile?.admissionNumber || profile?.admission_number}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">Student</p>
+                <h2 className="text-base font-bold text-slate-900">{profile?.first_name} {profile?.last_name}</h2>
+                <p className="text-xs text-slate-500">{profile?.admissionNumber || profile?.admission_number}</p>
               </div>
             </div>
 
-            <div className="mt-6 grid gap-3">
-              <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm text-slate-500">Class</p>
-                <p className="mt-1 font-semibold text-slate-900">{profile?.class_name || 'N/A'}</p>
+            <div className="mt-4 grid gap-2.5">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs text-slate-500">Class</p>
+                <p className="mt-0.5 text-sm font-semibold text-slate-900">{profile?.class_name || 'N/A'}</p>
               </div>
-              <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm text-slate-500">Parent contact</p>
-                <p className="mt-1 font-semibold text-slate-900">{profile?.parent_name || 'N/A'}</p>
-                <p className="text-sm text-slate-500">{profile?.parent_phone || profile?.parent_email || 'No contact available'}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs text-slate-500">Parent contact</p>
+                <p className="mt-0.5 text-sm font-semibold text-slate-900">{profile?.parent_name || 'N/A'}</p>
+                <p className="text-xs text-slate-500">{profile?.parent_phone || profile?.parent_email || 'No contact available'}</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-xl font-bold text-slate-900">What to do next</h3>
-            <p className="mt-3 text-sm text-slate-500">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900">What to do next</h3>
+            <p className="mt-2 text-xs text-slate-500">
               View the latest results for your child or return to their profile details at any time.
             </p>
             <Link
               to="/parent/result"
-              className="mt-6 inline-flex items-center justify-center rounded-[12px] bg-blue-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-800"
+              className="mt-4 inline-flex items-center justify-center rounded-lg bg-blue-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-800"
             >
               View Result
             </Link>

@@ -14,6 +14,7 @@
     "frontend"
   ],
   "dependencies": {
+    "cloudinary": "^2.10.0",
     "framer-motion": "^12.42.1",
     "react-icons": "^5.7.0"
   }
