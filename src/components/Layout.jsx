@@ -33,13 +33,20 @@ export default function Layout({ role }) {
 
   return (
     <div className="grid min-h-screen min-w-0 grid-cols-[260px_1fr] max-[760px]:grid-cols-1">
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="hidden max-[760px]:flex fixed top-4 left-4 z-50 items-center justify-center p-2 rounded-[7px] bg-primary text-white hover:bg-primary-dark transition"
-      >
-        {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-      </button>
+      {/* Mobile Top Bar */}
+      <div className="hidden max-[760px]:flex sticky top-0 z-30 w-full items-center justify-between border-b border-line bg-white px-4 py-2.5 shadow-sm no-print">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex items-center justify-center p-2 rounded-lg text-[#344054] hover:bg-slate-100 transition"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+          <span className="text-sm font-black tracking-wider text-ink">AN-NAHEEM ACADEMY</span>
+        </div>
+        <img className="h-8 w-8 object-contain" src="/Annaheem.jpeg.png" alt="Logo" />
+      </div>
 
       {/* Overlay for mobile menu */}
       {mobileMenuOpen && (
@@ -49,9 +56,17 @@ export default function Layout({ role }) {
         />
       )}
 
-      <aside className={`sticky top-0 flex h-screen flex-col gap-[18px] border-r border-line bg-white p-[18px] max-[760px]:static max-[760px]:h-auto max-[760px]:p-4 max-[760px]:fixed max-[760px]:left-0 max-[760px]:top-0 max-[760px]:w-64 max-[760px]:z-40 max-[760px]:transform max-[760px]:transition-transform max-[760px]:duration-300 ${
+      <aside className={`sticky top-0 flex h-screen flex-col gap-[18px] border-r border-line bg-white p-[18px] max-[760px]:fixed max-[760px]:left-0 max-[760px]:top-0 max-[760px]:h-screen max-[760px]:w-64 max-[760px]:z-50 max-[760px]:shadow-2xl max-[760px]:transform max-[760px]:transition-transform max-[760px]:duration-300 ${
         mobileMenuOpen ? 'max-[760px]:translate-x-0' : 'max-[760px]:-translate-x-full'
       }`}>
+        {/* Close Button in Mobile Menu */}
+        <button
+          onClick={() => setMobileMenuOpen(false)}
+          className="hidden max-[760px]:flex absolute top-4 right-4 items-center justify-center p-2 rounded-lg text-[#344054] hover:bg-slate-100 transition"
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
         <Link 
           className="flex flex-col items-center justify-center gap-1 px-0 pb-2 pt-0 text-center" 
           to={role === 'admin' ? '/admin' : '/parent'}

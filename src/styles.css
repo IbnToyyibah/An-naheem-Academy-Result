@@ -8,7 +8,7 @@
   }
 
   body {
-    @apply m-0 overflow-x-hidden bg-page font-sans text-ink;
+    @apply m-0 overflow-x-hidden bg-page font-sans text-sm text-ink;
   }
 
   a {
@@ -33,11 +33,11 @@
   }
 
   h1 {
-    @apply mb-1.5 text-xl font-bold;
+    @apply mb-1 text-lg font-bold text-slate-900;
   }
 
   h2 {
-    @apply text-base font-bold;
+    @apply text-sm font-bold text-slate-900;
   }
 
   p {
@@ -47,7 +47,7 @@
   input,
   select,
   textarea {
-    @apply w-full rounded-[7px] border border-line bg-white px-3 py-[11px] text-ink outline-none focus:border-primary focus:ring-2 focus:ring-primary/15;
+    @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink outline-none focus:border-primary focus:ring-2 focus:ring-primary/15;
   }
 
   textarea {
@@ -405,40 +405,6 @@
   }
 
 
-  /* Print styles: hide navigation/sidebar and on-screen controls, show print header */
-  @media print {
-
-    aside,
-    .sidebar,
-    .nav-button,
-    .no-print {
-      display: none !important;
-    }
-
-    .page-title {
-      display: none !important;
-    }
-
-    .print-header {
-      display: block !important;
-      width: 100%;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #e6e6e6;
-      padding-bottom: 12px;
-    }
-
-    .glass {
-      box-shadow: none !important;
-      border-radius: 0 !important;
-    }
-
-    /* Ensure tables fit print width */
-    table {
-      min-width: 0 !important;
-      width: 100% !important;
-    }
-  }
-
   /* Hide print header on screen */
   .print-header {
     display: none;
@@ -450,7 +416,7 @@
 }
 
 @layer utilities {
-  @media (max-width: 1040px) {
+  @media screen and (max-width: 1040px) {
 
     .stats-grid,
     .four {
@@ -462,7 +428,7 @@
     }
   }
 
-  @media (max-width: 760px) {
+  @media screen and (max-width: 760px) {
     .shell {
       @apply grid-cols-1;
     }
@@ -579,8 +545,8 @@
     }
 
     .responsive-table td {
-      @apply grid gap-2.5 border-b border-line px-0 py-3;
-      grid-template-columns: 120px minmax(0, 1fr);
+      @apply grid gap-2 border-b border-line px-0 py-2;
+      grid-template-columns: 110px minmax(0, 1fr);
     }
 
     .responsive-table td::before {
@@ -593,7 +559,7 @@
     }
   }
 
-  @media (max-width: 520px) {
+  @media screen and (max-width: 520px) {
 
     .auth-page,
     .content {
@@ -610,7 +576,7 @@
     }
 
     h1 {
-      @apply text-lg;
+      @apply text-base;
     }
 
     .stat strong {
@@ -623,22 +589,171 @@
   }
 
   @media print {
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
 
+    html,
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      background-color: #ffffff !important;
+      color: #000000 !important;
+    }
+
+    aside,
     .sidebar,
-    .no-print {
+    .nav-button,
+    .no-print,
+    header.no-print,
+    div.no-print,
+    button.no-print {
       display: none !important;
     }
 
-    .shell {
-      @apply block;
+    /* Reset main layout grid for printing to prevent empty columns */
+    div.grid.min-h-screen {
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    .content {
-      @apply p-0;
+    main {
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      display: block !important;
+    }
+
+    .page-title {
+      display: none !important;
+    }
+
+    .print-header {
+      display: block !important;
+      width: 100% !important;
+      margin-bottom: 10px !important;
+    }
+
+    .print-signatures {
+      display: flex !important;
+    }
+
+    .glass {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      border: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
     }
 
     .panel {
-      @apply border-0 shadow-none;
+      box-shadow: none !important;
+      border: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    .print-header,
+    .print-signatures,
+    .summary-grid,
+    .responsive-table,
+    table {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* Scope original table rules to responsive-table to avoid conflict */
+    .responsive-table table {
+      min-width: 0 !important;
+      width: 100% !important;
+      border: 1px solid #1e293b !important;
+      border-collapse: collapse !important;
+      table-layout: fixed !important;
+    }
+
+    .responsive-table th {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-bottom: 2px solid #1e293b !important;
+      font-size: 8px !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .responsive-table td,
+    .responsive-table th {
+      border: 1px solid #cbd5e1 !important;
+      color: #000000 !important;
+      padding: 4px 6px !important;
+      font-size: 8.5px !important;
+      line-height: 1.15 !important;
+    }
+
+    .responsive-table tbody tr:nth-child(even) {
+      background-color: #f8fafc !important;
+    }
+
+    .responsive-table td:nth-child(1) {
+      width: 32% !important;
+    }
+
+    .responsive-table td:nth-child(2),
+    .responsive-table td:nth-child(3),
+    .responsive-table td:nth-child(4),
+    .responsive-table td:nth-child(5),
+    .responsive-table td:nth-child(6) {
+      width: 9% !important;
+      text-align: center !important;
+    }
+
+    .responsive-table td:nth-child(7) {
+      width: 23% !important;
+    }
+
+    .print-header img {
+      width: 42px !important;
+      height: 42px !important;
+    }
+
+    /* Dedicated Print Report Card Styles */
+    .print-report-card {
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    .print-report-card table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-top: 8px !important;
+      table-layout: auto !important;
+    }
+
+    .print-report-card table th,
+    .print-report-card table td {
+      border: 1px solid #475569 !important; /* Slate-600 */
+      padding: 6px 8px !important;
+      font-size: 11px !important;
+      color: #0f172a !important;
+      line-height: 1.3 !important;
+    }
+
+    .print-report-card table th {
+      background-color: #f1f5f9 !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      font-size: 10px !important;
+      letter-spacing: 0.05em !important;
+    }
+
+    .print-report-card tr.odd-row {
+      background-color: #ffffff !important;
+    }
+
+    .print-report-card tr.even-row {
+      background-color: #f8fafc !important;
     }
   }
 }
