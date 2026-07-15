@@ -19,9 +19,9 @@ Private endpoints require Authorization: Bearer <token>.
 | --- | --- | --- |
 | GET | `/admin/dashboard` | Dashboard statistics and recent activities |
 | GET | `/students` | List/search students |
-| POST | `/students` | Create student with optional passport upload |
+| POST | `/students` | Create student with optional Cloudinary passport upload |
 | GET | `/students/:id` | Get one student |
-| PUT | `/students/:id` | Update student and optionally replace passport |
+| PUT | `/students/:id` | Update student and optionally replace Cloudinary passport |
 | DELETE | `/students/:id` | Delete student |
 | DELETE | `/students/:id/passport` | Delete student passport |
 | GET/POST | `/classes` | List or create classes |
