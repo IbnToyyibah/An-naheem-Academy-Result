@@ -9,5 +9,4 @@ export const defaultSubjects = [
   'Digital Technology',
   'Physical and Health Education',
   'Home Economics',
-  'Arabic Language'
 ];
