@@ -1,21 +1,11 @@
 {
-  "name": "junior-result-management-portal",
+  "name": "portal-annaheem",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
+  "type": "module",
+  "workspaces": ["backend", "frontend"],
   "scripts": {
-    "dev": "node scripts/dev.js",
-    "install:all": "npm install --workspaces",
-    "start": "npm run start --workspace backend",
-    "build": "npm run build --workspace frontend"
-  },
-  "workspaces": [
-    "backend",
-    "frontend"
-  ],
-  "dependencies": {
-    "cloudinary": "^2.10.0",
-    "framer-motion": "^12.42.1",
-    "react-icons": "^5.7.0"
+    "dev": "npm run dev --workspace backend & npm run dev --workspace frontend",
+    "install-all": "npm install --workspaces"
   }
 }
