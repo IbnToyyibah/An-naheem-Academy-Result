@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { Edit3, Save } from 'lucide-react';
 import { api } from '../../services/api.js';
+
 
 const panel = 'min-w-0 rounded-lg border border-line bg-panel p-[18px] shadow-panel max-[520px]:p-3.5';
 const formGrid = 'grid gap-3.5';
@@ -32,6 +33,15 @@ export default function Results() {
       });
   }, []);
 
+  // Helper to normalize different ID shapes
+  const normalizeSubjectId = (id) => {
+    if (!id) return null;
+    // id may be an object with .id, a string, or a MongoDB ObjectId instance
+    return typeof id === 'object' && id.id ? id.id : String(id);
+  };
+
+  const requestIdRef = useRef(0);
+
   useEffect(() => {
     const loadSavedResults = async () => {
       if (!filters.studentId || !filters.sessionId || !filters.termId || !lookups.subjects.length) {
@@ -39,12 +49,14 @@ export default function Results() {
       }
 
       setLoadingSavedResults(true);
+      const currentId = ++requestIdRef.current;
       try {
         const rows = await api(`/results/student/${filters.studentId}?sessionId=${filters.sessionId}&termId=${filters.termId}`);
+        if (currentId !== requestIdRef.current) return; // stale response
         const nextScores = {};
 
         rows.forEach((row) => {
-          const subjectId = row.subject_id?.id || row.subject_id || lookups.subjects.find((subject) => subject.subject_name === row.subject_name)?.id;
+          const subjectId = normalizeSubjectId(row.subject_id) || normalizeSubjectId(lookups.subjects.find((subject) => subject.subject_name === row.subject_name)?.id);
           if (!subjectId) return;
 
           nextScores[subjectId] = {
@@ -92,18 +104,85 @@ export default function Results() {
     event.preventDefault();
     setSaving(true);
     setMessage('');
-    const payload = {
-      ...filters,
-      scores: lookups.subjects.map((subject) => ({
-        subjectId: subject.id,
-        firstCa: scores[subject.id]?.firstCa || 0,
-        secondCa: scores[subject.id]?.secondCa || 0,
-        exam: scores[subject.id]?.exam || 0
-      }))
-    };
+    // 1️⃣ Load any existing results first so we can preserve unchanged values
+    const existingRows = await api(`/results/student/${filters.studentId}?sessionId=${filters.sessionId}&termId=${filters.termId}`).catch(() => []);
+    const existingMap = {};
+    existingRows.forEach(row => {
+      const sid = row.subject_id?.id || row.subject_id || lookups.subjects.find(s => s.subject_name === row.subject_name)?.id;
+      if (sid) {
+        existingMap[sid] = {
+          firstCa: row.first_ca ?? 0,
+          secondCa: row.second_ca ?? 0,
+          exam: row.exam ?? 0
+        };
+      }
+    });
+
+    // 2️⃣ Build the payload: keep existing scores when the input is empty
+    // Preserve attendance & principal remark if fields left empty
+    const existingAttendance = existingRows[0]?.attendance ?? '';
+    const existingPrincipal = existingRows[0]?.principal_remark ?? '';
+      const payload = {
+        ...filters,
+        // Preserve attendance & principal remark if fields left empty
+        attendance: filters.attendance !== '' ? filters.attendance : existingAttendance,
+        principalRemark: filters.principalRemark !== '' ? filters.principalRemark : existingPrincipal,
+        // Only include subjects that have any score (new or existing)
+        scores: lookups.subjects
+          .filter((subject) => {
+            const sid = subject.id;
+            const input = scores[sid] || {};
+            const existing = existingMap[sid] || {};
+            const hasInput =
+              input.firstCa !== undefined && input.firstCa !== '' ||
+              input.secondCa !== undefined && input.secondCa !== '' ||
+              input.exam !== undefined && input.exam !== '';
+            const hasExisting = existing.firstCa != null || existing.secondCa != null || existing.exam != null;
+            return hasInput || hasExisting;
+          })
+          .map((subject) => {
+            const sid = subject.id;
+            const input = scores[sid] || {};
+            const existing = existingMap[sid] || {};
+            return {
+              subjectId: sid,
+              firstCa:
+                input.firstCa !== undefined && input.firstCa !== ''
+                  ? Number(input.firstCa)
+                  : existing.firstCa,
+              secondCa:
+                input.secondCa !== undefined && input.secondCa !== ''
+                  ? Number(input.secondCa)
+                  : existing.secondCa,
+              exam:
+                input.exam !== undefined && input.exam !== ''
+                  ? Number(input.exam)
+                  : existing.exam,
+            };
+          }),
+      };
+
     try {
       await api('/results/bulk', { method: 'POST', body: JSON.stringify(payload) });
-      setHasSavedResults(true);
+      // Refresh UI with the freshly saved data
+      const rows = await api(`/results/student/${filters.studentId}?sessionId=${filters.sessionId}&termId=${filters.termId}`);
+      const nextScores = {};
+      rows.forEach(row => {
+        const subjectId = row.subject_id?.id || row.subject_id || lookups.subjects.find(s => s.subject_name === row.subject_name)?.id;
+        if (!subjectId) return;
+        nextScores[subjectId] = {
+          firstCa: row.first_ca ?? '',
+          secondCa: row.second_ca ?? '',
+          exam: row.exam ?? ''
+        };
+      });
+      setScores(nextScores);
+      setHasSavedResults(rows.length > 0);
+      setFilters(cur => ({
+        ...cur,
+        attendance: rows[0]?.attendance ?? '',
+        principalRemark: rows[0]?.principal_remark ?? ''
+      }));
       setMessage('Results saved successfully');
     } catch (err) {
       console.error(err);
@@ -118,6 +197,7 @@ export default function Results() {
       <header className="mb-5 flex items-start justify-between gap-4 max-[760px]:grid">
         <h1>Result Upload</h1>
         <p>{hasSavedResults ? 'Editing existing results for the selected student and term.' : 'Enter 1st CA, 2nd CA, and examination scores for each subject.'}</p>
+
       </header>
       <form className={`${panel} ${formGrid}`} onSubmit={submit}>
         <div className="grid grid-cols-4 gap-3 max-[1040px]:grid-cols-2 max-[760px]:grid-cols-1">

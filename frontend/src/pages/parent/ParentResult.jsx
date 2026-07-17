@@ -6,6 +6,7 @@ import EmptyState from '../../components/EmptyState.jsx';
 import { assetUrl } from '../../services/api.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { defaultSubjects } from '../../utils/subjects.js';
+import StatCard from '../../components/StatCard.jsx';
 
 export default function ParentResult() {
   const { user } = useAuth();
@@ -123,6 +124,7 @@ export default function ParentResult() {
               </p>
             </div>
           </div>
+            <StatCard label="Next term begins" value="SEPTEMEBR 21ST, 2026" valueClassName="mt-2 block text-lg font-semibold max-[520px]:text-base" />
           <div className="mt-3 grid grid-cols-4 gap-3 text-[10px]">
             <div>
               <span className="block uppercase tracking-[0.14em] text-slate-500">Student</span>
