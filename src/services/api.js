@@ -42,7 +42,7 @@ export async function api(path, options = {}) {
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const url = `${API_URL}${path}`;
-  const requestTimeout = typeof _timeout === 'number' ? _timeout : 15000;
+  const requestTimeout = typeof _timeout === 'number' ? _timeout : 140000;
 
   const makeFetch = async (signal) => {
     return fetch(url, {

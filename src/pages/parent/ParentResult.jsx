@@ -6,6 +6,7 @@ import EmptyState from '../../components/EmptyState.jsx';
 import { assetUrl } from '../../services/api.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { defaultSubjects } from '../../utils/subjects.js';
+import StatCard from '../../components/StatCard.jsx';
 
 export default function ParentResult() {
   const { user } = useAuth();
@@ -109,12 +110,12 @@ export default function ParentResult() {
             <div className="flex items-center gap-3">
               <img src="/Annaheem.jpeg.png" alt="Annaheem Academy logo" className="h-12 w-12 object-contain" />
               <div>
-                <h1 className="m-0 text-xl font-black uppercase leading-none tracking-[0.16em] text-slate-900">AN-NAHEEM ACADEMY</h1>
-                <p className="m-0 mt-1 text-md font-semibold text-slate-600">Knowledge, Discipline & Excellence</p>
+                <h1 className="m-0 text-xl font-black uppercase leading-none tracking-[0.16em] text-blue-900">AN-NAHEEM ACADEMY</h1>
+                <p className="m-0 mt-1 text-md font-semibold text-black">Knowledge, Discipline & Excellence</p>
               </div>
             </div>
             <div className="text-right">
-              <h2 className="m-0 text-[12px] font-black uppercase tracking-[0.18em] text-slate-900">Term Result Sheet</h2>
+              <h2 className="m-0 text-[12px] font-black uppercase tracking-[0.18em] text-black">Term Result Sheet</h2>
               <p className="m-0 mt-1 text-[10px] text-slate-600">
                 Session: <span className="font-semibold text-slate-900">{lookups.sessions.find(s => String(s.id) === String(filters.sessionId))?.session_name || 'N/A'}</span>
               </p>
@@ -123,22 +124,23 @@ export default function ParentResult() {
               </p>
             </div>
           </div>
+          <StatCard label="Next term begins" value="SEPTEMEBR 21ST, 2026" valueClassName="mt-2 block text-md font-semibold max-[520px]:text-base" />
           <div className="mt-3 grid grid-cols-4 gap-3 text-[10px]">
             <div>
-              <span className="block uppercase tracking-[0.14em] text-slate-500">Student</span>
-              <span className="font-bold text-slate-900">{profile?.first_name} {profile?.last_name}</span>
+              <span className="block uppercase tracking-[0.14em] text-red-700">Student</span>
+              <span className="font-bold text-black">{profile?.first_name} {profile?.last_name}</span>
             </div>
             <div>
               <span className="block uppercase tracking-[0.14em] text-slate-500">Admission</span>
-              <span className="font-bold text-slate-900">{profile?.admissionNumber || profile?.admission_number}</span>
+              <span className="font-bold text-black">{profile?.admissionNumber || profile?.admission_number}</span>
             </div>
             <div>
               <span className="block uppercase tracking-[0.14em] text-slate-500">Class</span>
-              <span className="font-bold text-slate-900">{profile?.class_name || 'N/A'}</span>
+              <span className="font-bold text-black">{profile?.class_name || 'N/A'}</span>
             </div>
             <div>
               <span className="block uppercase tracking-[0.14em] text-slate-500">Gender</span>
-              <span className="font-bold capitalize text-slate-900">{profile?.gender || 'N/A'}</span>
+              <span className="font-bold capitalize text-black">{profile?.gender || 'N/A'}</span>
             </div>
           </div>
         </div>
@@ -151,20 +153,17 @@ export default function ParentResult() {
                   <ClipboardList size={26} className="text-slate-900" />
                 </div>
                 <div>
-                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Academic Result</p>
-                  <h1 className="m-0 text-2xl font-black tracking-tight text-slate-900 max-[520px]:text-xl">View Result</h1>
-                  <p className="mt-1 max-w-2xl text-sm text-slate-600">
-                    A cleaner, printable report sheet for the selected student, built to stay compact and readable.
-                  </p>
+                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-black">Academic Result</p>
+                  <h1 className="m-0 text-1xl font-black tracking-tight text-red-900 max-[520px]:text-xl">View Result</h1>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 backdrop-blur transition hover:bg-slate-100" onClick={() => window.print()}>
+                <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-black backdrop-blur transition hover:bg-slate-100" onClick={() => window.print()}>
                   <Printer size={13} /> Print
                 </button>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 backdrop-blur transition hover:bg-slate-100"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-black backdrop-blur transition hover:bg-slate-100"
                   onClick={() => window.location.reload()}
                 >
                   <RefreshCcw size={13} /> Refresh
@@ -174,7 +173,7 @@ export default function ParentResult() {
           </div>
         </header>
 
-        <section className="no-print mb-4 overflow-hidden rounded-[24px] bg-white/90 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.05)] backdrop-blur">
+        <section className="no-print mb-4 overflow-hidden rounded-[24px] bg-slate-100/90 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.05)] backdrop-blur">
           <div className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
             <div className="flex items-center gap-3">
               {profile?.passport_path ? (
