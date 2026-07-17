@@ -1,25 +1,14 @@
 {
-  "name": "portal-frontend",
+  "name": "portal-annaheem",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
+  "workspaces": ["backend", "frontend"],
   "scripts": {
-    "dev": "vite --host localhost",
-    "build": "vite build",
-    "preview": "vite preview --host localhost"
-  },
-  "dependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "framer-motion": "^12.42.2",
-    "lucide-react": "^0.468.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-icons": "^5.7.0",
-    "react-router-dom": "^7.1.1",
-    "vite": "^6.0.7"
+    "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
+    "install-all": "npm install --workspaces"
   },
   "devDependencies": {
-    "autoprefixer": "^10.5.2",
-    "postcss": "^8.5.15",
-    "tailwindcss": "^3.4.17"
+    "concurrently": "^8.2.2"
   }
 }
