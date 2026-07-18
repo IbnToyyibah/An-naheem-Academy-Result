@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Edit3, Save } from 'lucide-react';
 import { api } from '../../services/api.js';
 
@@ -36,54 +36,59 @@ export default function Results() {
   // Helper to normalize different ID shapes
   const normalizeSubjectId = (id) => {
     if (!id) return null;
-    // id may be an object with .id, a string, or a MongoDB ObjectId instance
     return typeof id === 'object' && id.id ? id.id : String(id);
   };
 
   const requestIdRef = useRef(0);
 
-  useEffect(() => {
-    const loadSavedResults = async () => {
-      if (!filters.studentId || !filters.sessionId || !filters.termId || !lookups.subjects.length) {
-        return;
+  // Extracted as a standalone function so it can be called after save too
+  const loadSavedResults = useCallback(async (studentId, sessionId, termId, subjects, { silent = false } = {}) => {
+    if (!studentId || !sessionId || !termId || !subjects.length) return;
+
+    if (!silent) setLoadingSavedResults(true);
+    const currentId = ++requestIdRef.current;
+    try {
+      const rows = await api(`/results/student/${studentId}?sessionId=${sessionId}&termId=${termId}`);
+      if (currentId !== requestIdRef.current) return; // stale response
+
+      const nextScores = {};
+      rows.forEach((row) => {
+        const subjectId = normalizeSubjectId(row.subject_id)
+          || normalizeSubjectId(subjects.find((s) => s.subject_name === row.subject_name)?.id);
+        if (!subjectId) return;
+        nextScores[subjectId] = {
+          firstCa: row.first_ca ?? '',
+          secondCa: row.second_ca ?? '',
+          exam: row.exam ?? ''
+        };
+      });
+
+      setScores(nextScores);
+      setHasSavedResults(rows.length > 0);
+      setFilters((current) => ({
+        ...current,
+        attendance: rows[0]?.attendance ?? '',
+        principalRemark: rows[0]?.principal_remark ?? ''
+      }));
+      if (!silent) {
+        setMessage(rows.length
+          ? 'Loaded saved results. You can edit and save changes.'
+          : 'No saved results found for this selection.');
       }
-
-      setLoadingSavedResults(true);
-      const currentId = ++requestIdRef.current;
-      try {
-        const rows = await api(`/results/student/${filters.studentId}?sessionId=${filters.sessionId}&termId=${filters.termId}`);
-        if (currentId !== requestIdRef.current) return; // stale response
-        const nextScores = {};
-
-        rows.forEach((row) => {
-          const subjectId = normalizeSubjectId(row.subject_id) || normalizeSubjectId(lookups.subjects.find((subject) => subject.subject_name === row.subject_name)?.id);
-          if (!subjectId) return;
-
-          nextScores[subjectId] = {
-            firstCa: row.first_ca ?? '',
-            secondCa: row.second_ca ?? '',
-            exam: row.exam ?? ''
-          };
-        });
-
-        setScores(nextScores);
-        setHasSavedResults(rows.length > 0);
-        setFilters((current) => ({
-          ...current,
-          attendance: rows[0]?.attendance ?? '',
-          principalRemark: rows[0]?.principal_remark ?? ''
-        }));
-        setMessage(rows.length ? 'Loaded saved results. You can edit and save changes.' : 'No saved results found for this selection.');
-      } catch (err) {
+    } catch (err) {
+      if (!silent) {
         setHasSavedResults(false);
         setScores({});
         setMessage(err.message || 'Unable to load saved results.');
-      } finally {
-        setLoadingSavedResults(false);
       }
-    };
+    } finally {
+      if (!silent) setLoadingSavedResults(false);
+    }
+  }, []);
 
-    loadSavedResults();
+  // Re-run whenever the student/session/term selection changes
+  useEffect(() => {
+    loadSavedResults(filters.studentId, filters.sessionId, filters.termId, lookups.subjects);
   }, [filters.studentId, filters.sessionId, filters.termId, lookups.subjects]);
 
   const totals = useMemo(() => {
@@ -118,55 +123,46 @@ export default function Results() {
       }
     });
 
-    // 2️⃣ Build the payload: keep existing scores when the input is empty
-    // Preserve attendance & principal remark if fields left empty
+    // 2️⃣ Build the payload
     const existingAttendance = existingRows[0]?.attendance ?? '';
     const existingPrincipal = existingRows[0]?.principal_remark ?? '';
-      const payload = {
-        ...filters,
-        // Preserve attendance & principal remark if fields left empty
-        attendance: filters.attendance !== '' ? filters.attendance : existingAttendance,
-        principalRemark: filters.principalRemark !== '' ? filters.principalRemark : existingPrincipal,
-        // Only include subjects that have any score (new or existing)
-        scores: lookups.subjects
-          .filter((subject) => {
-            const sid = subject.id;
-            const input = scores[sid] || {};
-            const existing = existingMap[sid] || {};
-            const hasInput =
-              input.firstCa !== undefined && input.firstCa !== '' ||
-              input.secondCa !== undefined && input.secondCa !== '' ||
-              input.exam !== undefined && input.exam !== '';
-            const hasExisting = existing.firstCa != null || existing.secondCa != null || existing.exam != null;
-            return hasInput || hasExisting;
-          })
-          .map((subject) => {
-            const sid = subject.id;
-            const input = scores[sid] || {};
-            const existing = existingMap[sid] || {};
-            return {
-              subjectId: sid,
-              firstCa:
-                input.firstCa !== undefined && input.firstCa !== ''
-                  ? Number(input.firstCa)
-                  : existing.firstCa,
-              secondCa:
-                input.secondCa !== undefined && input.secondCa !== ''
-                  ? Number(input.secondCa)
-                  : existing.secondCa,
-              exam:
-                input.exam !== undefined && input.exam !== ''
-                  ? Number(input.exam)
-                  : existing.exam,
-            };
-          }),
-      };
+    const payload = {
+      ...filters,
+      attendance: filters.attendance !== '' ? filters.attendance : existingAttendance,
+      principalRemark: filters.principalRemark !== '' ? filters.principalRemark : existingPrincipal,
+      scores: lookups.subjects
+        .filter((subject) => {
+          const sid = subject.id;
+          const input = scores[sid] || {};
+          const existing = existingMap[sid] || {};
+          const hasInput =
+            (input.firstCa !== undefined && input.firstCa !== '') ||
+            (input.secondCa !== undefined && input.secondCa !== '') ||
+            (input.exam !== undefined && input.exam !== '');
+          const hasExisting = existing.firstCa != null || existing.secondCa != null || existing.exam != null;
+          return hasInput || hasExisting;
+        })
+        .map((subject) => {
+          const sid = subject.id;
+          const input = scores[sid] || {};
+          const existing = existingMap[sid] || {};
+          return {
+            subjectId: sid,
+            firstCa: input.firstCa !== undefined && input.firstCa !== '' ? Number(input.firstCa) : existing.firstCa,
+            secondCa: input.secondCa !== undefined && input.secondCa !== '' ? Number(input.secondCa) : existing.secondCa,
+            exam: input.exam !== undefined && input.exam !== '' ? Number(input.exam) : existing.exam,
+          };
+        }),
+    };
 
     try {
       await api('/results/bulk', { method: 'POST', body: JSON.stringify(payload) });
-      // Keep existing UI state; just acknowledge success
       setMessage('Results saved successfully');
       setHasSavedResults(true);
+      // 3️⃣ Re-fetch from server to confirm what was actually stored
+      //    (silently updates scores, attendance and principalRemark without
+      //    resetting the message or showing a loading indicator)
+      await loadSavedResults(filters.studentId, filters.sessionId, filters.termId, lookups.subjects, { silent: true });
     } catch (err) {
       console.error(err);
       setMessage(err.message || 'Failed to save results');
