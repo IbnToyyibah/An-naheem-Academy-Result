@@ -23,7 +23,7 @@ export default function Results() {
         setFilters({
           studentId: students[0]?.id || '',
           sessionId: sessions.find((s) => s.is_current)?.id || sessions[0]?.id || '',
-          termId: terms[0]?.id || '',
+          termId: terms.find((t) => t.is_current)?.id || terms[0]?.id || '',
           attendance: '',
           principalRemark: ''
         });
