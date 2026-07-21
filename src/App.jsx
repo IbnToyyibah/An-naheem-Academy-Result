@@ -2,6 +2,9 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import Login from './pages/Login.jsx';
+import Home from './pages/landing/Home.jsx';
+import About from './pages/landing/About.jsx';
+import Admissions from './pages/landing/Admissions.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import Students from './pages/admin/Students.jsx';
 import Results from './pages/admin/Results.jsx';
@@ -13,8 +16,12 @@ import ParentResult from './pages/parent/ParentResult.jsx';
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/admin-login" replace />} />
-      <Route path="/login" element={<Navigate to="/admin-login" replace />} />
+      {/* ── Landing pages ── */}
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/admissions" element={<Admissions />} />
+      <Route path="/contact" element={<Navigate to="/" replace />} />
+      <Route path="/login" element={<Navigate to="/parent-login" replace />} />
       <Route path="/admin-login" element={<Login role="admin" />} />
       <Route path="/admin/login" element={<Navigate to="/admin-login" replace />} />
       <Route path="/parent-login" element={<Login role="parent" />} />
@@ -37,7 +44,7 @@ export default function App() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/admin-login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
