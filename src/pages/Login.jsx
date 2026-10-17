@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { GraduationCap, LoaderCircle, LockKeyhole } from 'lucide-react';
+import { GraduationCap, LoaderCircle, LockKeyhole, Home } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login({ role }) {
@@ -65,6 +65,10 @@ export default function Login({ role }) {
 
         <Link to={isAdmin ? '/parent-login' : '/admin-login'} className="mt-4 block text-center text-xs font-bold text-primary hover:underline">
           {isAdmin ? 'Switch to Parent Login' : 'Switch to Admin Login'}
+        </Link>
+
+        <Link to="/" className="mt-3 flex items-center justify-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#1e3a8a] transition-colors">
+          <Home size={13} /> Back to Home
         </Link>
       </section>
     </main>
