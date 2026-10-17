@@ -10,11 +10,11 @@ export default {
         panel: '#ffffff',
         page: '#f5f7fb',
         primary: {
-          DEFAULT: '#0f766e',
-          dark: '#0b5f59',
-          soft: '#e9f5f3'
+          DEFAULT: '#1e3a8a',
+          dark: '#1e40af',
+          soft: '#dbeafe'
         },
-        accent: '#b42318'
+        accent: '#b42318',
       },
       boxShadow: {
         panel: '0 18px 50px rgba(17, 24, 39, 0.07)'

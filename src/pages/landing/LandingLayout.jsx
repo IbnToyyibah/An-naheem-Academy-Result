@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, GraduationCap, Phone, Mail, MapPin, Facebook, Twitter, Youtube, ChevronUp } from 'lucide-react';
+import {
+  Menu, X, Search, GraduationCap, Phone, Mail,
+  MapPin, Facebook, Twitter, Youtube, ChevronUp,
+} from 'lucide-react';
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -18,144 +21,122 @@ export default function LandingLayout({ children }) {
   const [searchVal, setSearchVal] = useState('');
   const location = useLocation();
 
-  useEffect(() => {
-    setMenuOpen(false);
-    setSearchOpen(false);
-  }, [location]);
+  useEffect(() => { setMenuOpen(false); setSearchOpen(false); }, [location]);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 60);
-      setShowTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    const fn = () => { setScrolled(window.scrollY > 50); setShowTop(window.scrollY > 400); };
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-ink overflow-x-hidden">
-      {/* ── Announcement bar ─────────────────────────────────── */}
-      <div className="bg-primary text-white text-xs font-semibold text-center py-2 px-4 hidden sm:block">
-        🎉 Admissions open for 2025/2026 session — Apply now before seats are filled!
-        <Link to="/admissions" className="ml-2 underline hover:no-underline font-bold">Learn More</Link>
+
+      {/* Announcement bar */}
+      <div className="bg-[#1e3a8a] text-sky-100 text-xs font-medium text-center py-2 px-6 hidden sm:block tracking-wide">
+        Admissions open for 2025/2026 session —&nbsp;
+        <Link to="/admissions" className="underline font-bold text-white hover:text-yellow-300 transition">Apply now</Link>
       </div>
 
-      {/* ── Arabic greeting bar ──────────────────────────────── */}
-      <div className="bg-[#0b5f59] text-[#d4f5f0] text-center py-2 px-4">
-        <span className="font-bold text-sm tracking-wide" style={{ fontFamily: 'serif', direction: 'rtl' }}>
-          ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّٰهِ وَبَرَكَاتُهُ
-        </span>
+      {/* Arabic greeting */}
+      <div className="bg-[#162d6e] text-sky-100 text-center py-2 px-6 text-base font-semibold" dir="rtl"
+        style={{ fontFamily: "'Amiri', 'Scheherazade New', serif", letterSpacing: '0.04em' }}>
+        ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّٰهِ وَبَرَكَاتُهُ
       </div>
 
-      {/* ── Navbar ───────────────────────────────────────────── */}
-      <header className={`sticky top-0 z-50 border-b border-line bg-white transition-shadow duration-300 ${scrolled ? 'shadow-md' : ''}`}>
-        <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
-          {/* Logo + name */}
-          <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src="/Annaheem.jpeg.png" alt="An-Naheem Academy" className="h-12 w-12 object-contain rounded-full border-2 border-primary/20" />
-            <div className="leading-tight">
-              <div className="font-black text-sm text-primary uppercase tracking-wide">An-Naheem</div>
-              <div className="font-black text-xs text-ink uppercase tracking-widest">Academy</div>
+      {/* Navbar */}
+      <header className={`sticky top-0 z-50 bg-white border-b border-slate-200 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
+        <nav className="mx-auto flex max-w-7xl items-center gap-6 px-6 h-16 relative">
+
+          {/* Brand */}
+          <Link to="/" className="flex items-center gap-3 shrink-0 min-w-0">
+            <img src="/Annaheem.jpeg.png" alt="An-Naheem Academy"
+              className="h-16 w-16 object-contain rounded-full ring-2 ring-blue-100 shrink-0" />
+            <div className="leading-none hidden sm:block">
+              <div className="font-extrabold text-2xl text-blue-800 tracking-tight">AN-NAHEEM ACADEMY</div>
             </div>
           </Link>
 
-          {/* Desktop nav links */}
-          <div className="hidden md:flex items-center gap-1 ml-6">
+          {/* Desktop links — centred absolutely */}
+          <div className="hidden md:flex items-center gap-0.5 absolute left-1/2 -translate-x-1/2">
             {NAV_LINKS.map(({ to, label }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === '/'}
+              <NavLink key={to} to={to} end={to === '/'}
                 className={({ isActive }) =>
-                  `px-4 py-2 rounded-lg text-sm font-semibold transition ${isActive
-                    ? 'bg-primary text-white'
-                    : 'text-ink hover:bg-primary-soft hover:text-primary-dark'}`
-                }
-              >
+                  `px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive
+                    ? 'text-[#1e3a8a] font-semibold bg-blue-50'
+                    : 'text-slate-700 hover:text-[#1e3a8a] hover:bg-blue-50'}`}>
                 {label}
               </NavLink>
             ))}
           </div>
 
-          {/* Spacer */}
           <div className="flex-1" />
 
           {/* Search */}
-          <div className="hidden md:flex items-center relative">
+          <div className="hidden md:flex items-center gap-1 relative">
             <AnimatePresence>
               {searchOpen && (
-                <motion.input
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: 200, opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  autoFocus
-                  placeholder="Search…"
-                  value={searchVal}
+                <motion.input autoFocus placeholder="Search…" value={searchVal}
                   onChange={e => setSearchVal(e.target.value)}
-                  className="absolute right-9 border border-line rounded-lg px-3 py-1.5 text-sm text-ink outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 bg-white"
-                />
+                  initial={{ width: 0, opacity: 0 }} animate={{ width: 180, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }} transition={{ duration: 0.2 }}
+                  className="absolute right-8 h-8 border border-slate-200 rounded-lg px-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 bg-white text-black" />
               )}
             </AnimatePresence>
-            <button
-              onClick={() => setSearchOpen(v => !v)}
-              className="p-2 rounded-lg hover:bg-primary-soft text-muted hover:text-primary transition"
-              aria-label="Search"
-            >
-              <Search size={18} />
+            <button onClick={() => setSearchOpen(v => !v)}
+              className="p-2 text-slate-black hover:text-[#1e3a8a] hover:bg-blue-50 rounded-lg transition-all" aria-label="Search">
+              <Search size={17} />
             </button>
           </div>
 
-          {/* Login button */}
-          <Link
-            to="/parent-login"
-            className="hidden md:inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary-dark transition"
-          >
-            <GraduationCap size={16} />
-            Login
-          </Link>
+          {/* Login buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            <Link to="/admin-login"
+              className="px-4 py-1.5 text-sm font-semibold text-slate-700 border border-slate-200 rounded-lg hover:border-blue-300 hover:text-[#1e3a8a] hover:bg-blue-50 transition-all duration-200">
+              Admin
+            </Link>
+            <Link to="/parent-login"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-[#1e3a8a] text-white rounded-lg hover:bg-[#1e40af] transition-all duration-200 shadow-sm">
+              <GraduationCap size={15} /> Parent Login
+            </Link>
+          </div>
 
           {/* Mobile hamburger */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-primary-soft text-ink transition"
-            onClick={() => setMenuOpen(v => !v)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          <button className="md:hidden p-2 text-slate-600 hover:text-[#1e3a8a] hover:bg-blue-50 rounded-lg transition-all"
+            onClick={() => setMenuOpen(v => !v)} aria-label="Menu">
+            <motion.div animate={{ rotate: menuOpen ? 90 : 0 }} transition={{ duration: 0.2 }}>
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </motion.div>
           </button>
         </nav>
 
-        {/* Mobile menu */}
+        {/* Mobile dropdown */}
         <AnimatePresence>
           {menuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.22 }}
-              className="overflow-hidden border-t border-line md:hidden"
-            >
-              <div className="flex flex-col gap-1 px-4 py-3">
-                {NAV_LINKS.map(({ to, label }) => (
-                  <NavLink
-                    key={to}
-                    to={to}
-                    end={to === '/'}
-                    className={({ isActive }) =>
-                      `px-4 py-2.5 rounded-lg text-sm font-semibold transition ${isActive
-                        ? 'bg-primary text-white'
-                        : 'text-ink hover:bg-primary-soft hover:text-primary-dark'}`
-                    }
-                  >
-                    {label}
-                  </NavLink>
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
+              className="overflow-hidden border-t border-slate-100 md:hidden bg-white">
+              <div className="px-5 py-4 grid gap-1.5">
+                {NAV_LINKS.map(({ to, label }, i) => (
+                  <motion.div key={to} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}>
+                    <NavLink to={to} end={to === '/'}
+                      className={({ isActive }) =>
+                        `block px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
+                          ? 'bg-blue-50 text-[#1e3a8a] font-semibold'
+                          : 'text-slate-700 hover:bg-blue-50 hover:text-[#1e3a8a]'}`}>
+                      {label}
+                    </NavLink>
+                  </motion.div>
                 ))}
-                <div className="flex gap-2 mt-2 border-t border-line pt-3">
-                  <Link to="/parent-login" className="flex-1 text-center bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary-dark transition">
-                    Parent Login
+                <div className="grid grid-cols-2 gap-2 mt-2 pt-3 border-t border-slate-100">
+                  <Link to="/admin-login"
+                    className="text-center py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-700 hover:bg-blue-50 hover:border-blue-300 hover:text-[#1e3a8a] transition-all">
+                    Admin
                   </Link>
-                  <Link to="/admin-login" className="flex-1 text-center bg-slate-100 text-ink px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-200 transition">
-                    Admin Login
+                  <Link to="/parent-login"
+                    className="text-center py-2.5 text-sm font-semibold bg-[#1e3a8a] text-white rounded-lg hover:bg-[#1e40af] transition-all">
+                    Parent Login
                   </Link>
                 </div>
               </div>
@@ -164,61 +145,57 @@ export default function LandingLayout({ children }) {
         </AnimatePresence>
       </header>
 
-      {/* ── Page content ─────────────────────────────────────── */}
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
 
-      {/* ── Footer ───────────────────────────────────────────── */}
-      <footer className="bg-[#0d1b2a] text-slate-300">
-        {/* Main footer grid */}
-        <div className="mx-auto max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 px-6 py-14">
-          {/* Brand column */}
+      {/* Footer */}
+      <footer className="bg-[#0f172a] text-white">
+        <div className="mx-auto max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 px-6 sm:px-8 py-14">
+
+          {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/Annaheem.jpeg.png" alt="Logo" className="h-12 w-12 rounded-full object-contain border border-primary/30" />
+            <div className="flex items-center gap-3 mb-5">
+              <img src="/Annaheem.jpeg.png" alt="Logo"
+                className="h-11 w-11 rounded-full object-contain ring-1 ring-white/15" />
               <div>
-                <div className="font-black text-white text-sm uppercase">An-Naheem</div>
-                <div className="text-xs text-slate-400 uppercase tracking-wider">Academy</div>
+                <div className="font-extrabold text-white text-sm tracking-tight">AN-NAHEEM</div>
+                <div className="text-[10px] text-white font-bold uppercase tracking-widest">Academy</div>
               </div>
             </div>
-            <p className="text-sm text-slate-400 leading-relaxed mb-5">
-              Nurturing excellence in education and Islamic values since our founding. Building tomorrow's leaders today.
+            <p className="text-sm text-white font-bold leading-relaxed mb-5">
+              Nurturing academic excellence and Islamic values — building Nigeria's next generation of leaders.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               {[Facebook, Twitter, Youtube].map((Icon, i) => (
-                <a key={i} href="#" className="h-9 w-9 rounded-full bg-white/10 grid place-items-center hover:bg-primary transition text-slate-300 hover:text-white">
+                <motion.a key={i} href="#" whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.95 }}
+                  className="h-9 w-9 rounded-lg bg-white/10 grid place-items-center hover:bg-[#1e3a8a] text-white transition-colors duration-200">
                   <Icon size={15} />
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>
 
           {/* Quick links */}
           <div>
-            <h3 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Quick Links</h3>
+            <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-5">Quick Links</h4>
             <ul className="grid gap-2.5">
-              {[['/', 'Home'], ['/about', 'About Us'], ['/admissions', 'Admissions'], ['/parent-login', 'Parent Portal'], ['/admin-login', 'Admin Login']].map(([to, label]) => (
+              {[['/', 'Home'], ['/about', 'About Us'], ['/admissions', 'Admissions'],
+              ['/parent-login', 'Parent Portal'], ['/admin-login', 'Admin Login']].map(([to, label]) => (
                 <li key={to}>
-                  <Link to={to} className="text-sm text-slate-400 hover:text-primary transition flex items-center gap-2">
-                    <span className="h-1 w-1 rounded-full bg-primary inline-block" />
-                    {label}
+                  <Link to={to} className="text-sm text-white font-bold hover:text-sky-300 transition-colors duration-200 flex items-center gap-2 group">
+                    <span className="h-px w-3 bg-sky-400 inline-block group-hover:w-5 transition-all duration-200 shrink-0" />{label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Academic */}
+          {/* Academics */}
           <div>
-            <h3 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Academics</h3>
+            <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-5">Academics</h4>
             <ul className="grid gap-2.5">
-              {['JSS 1', 'JSS 2', 'JSS 3', 'Islamic Studies', 'Arabic Language', 'Quran Recitation'].map(item => (
-                <li key={item}>
-                  <span className="text-sm text-slate-400 flex items-center gap-2">
-                    <span className="h-1 w-1 rounded-full bg-primary inline-block" />
-                    {item}
-                  </span>
+              {['JSS 1', 'JSS 2', 'JSS 3', 'SS 1', 'SS 2', 'SS 3', 'Islamic Studies', 'Arabic Language'].map(item => (
+                <li key={item} className="text-sm text-white font-bold flex items-center gap-2">
+                  <span className="h-px w-3 bg-sky-400 inline-block shrink-0" />{item}
                 </li>
               ))}
             </ul>
@@ -226,47 +203,49 @@ export default function LandingLayout({ children }) {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Contact Us</h3>
+            <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-5">Contact</h4>
             <ul className="grid gap-4">
               <li className="flex gap-3 items-start">
-                <MapPin size={16} className="text-primary mt-0.5 shrink-0" />
-                <span className="text-sm text-slate-400">An-Naheem Academy, Nigeria</span>
+                <MapPin size={14} className="text-sky-400 mt-0.5 shrink-0" />
+                <span className="text-sm text-white font-bold">An-Naheem Academy, Nigeria</span>
               </li>
               <li className="flex gap-3 items-center">
-                <Phone size={16} className="text-primary shrink-0" />
-                <span className="text-sm text-slate-400">+234 000 000 0000</span>
+                <Phone size={14} className="text-sky-400 shrink-0" />
+                <a href="https://wa.me/2348060171809" target="_blank" rel="noreferrer"
+                  className="text-sm text-white font-bold hover:text-sky-300 transition-colors">
+                  +234 8060171809 (WhatsApp)
+                </a>
               </li>
               <li className="flex gap-3 items-center">
-                <Mail size={16} className="text-primary shrink-0" />
-                <span className="text-sm text-slate-400">info@annaheemacademy.edu.ng</span>
+                <Mail size={14} className="text-sky-400 shrink-0" />
+                <a href="mailto:annaheemacademy2017@gmail.com"
+                  className="text-sm text-white font-bold hover:text-sky-300 transition-colors">
+                  annaheemacademy2017@gmail.com
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-white/10 px-6 py-5">
-          <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="border-t border-white/10 px-6 sm:px-8 py-5">
+          <div className="mx-auto max-w-7xl flex flex-col sm:flex-row justify-between gap-2 text-xs text-white font-bold">
             <span>© {new Date().getFullYear()} An-Naheem Academy. All rights reserved.</span>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-slate-300 transition">Privacy Policy</a>
-              <a href="#" className="hover:text-slate-300 transition">Terms of Use</a>
+            <div className="flex gap-5">
+              <a href="#" className="hover:text-sky-300 transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-sky-300 transition-colors">Terms of Use</a>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* ── Back to top ──────────────────────────────────────── */}
+      {/* Back to top */}
       <AnimatePresence>
         {showTop && (
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+          <motion.button initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-6 right-6 z-50 h-11 w-11 rounded-full bg-primary text-white shadow-lg grid place-items-center hover:bg-primary-dark transition"
-            aria-label="Back to top"
-          >
+            className="fixed bottom-6 right-6 z-50 h-11 w-11 rounded-full bg-[#1e3a8a] text-white shadow-lg grid place-items-center hover:bg-[#1e40af] transition-colors"
+            aria-label="Back to top">
             <ChevronUp size={20} />
           </motion.button>
         )}
