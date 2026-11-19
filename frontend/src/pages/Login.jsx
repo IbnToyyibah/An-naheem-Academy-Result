@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { GraduationCap, LoaderCircle, LockKeyhole } from 'lucide-react';
+import { GraduationCap, LoaderCircle, LockKeyhole, Home } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login({ role }) {
@@ -30,6 +30,11 @@ export default function Login({ role }) {
 
   return (
     <main className="grid min-h-screen place-items-center bg-gradient-to-br from-[#edf8f6] via-[#f7f8fb] to-[#fff5ed] p-6 max-[520px]:p-3">
+
+      {/* Home icon — top left */}
+      <Link to="/" className="fixed top-4 left-4 h-9 w-9 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm hover:text-[#1e3a8a] hover:border-blue-300 hover:bg-blue-50 transition-all text-slate-500">
+        <Home size={18} />
+      </Link>
       <section className="w-full max-w-[360px] rounded-2xl border border-line bg-panel p-6 shadow-panel max-[520px]:p-4">
         <div className="mb-5 flex items-center gap-3">
           <GraduationCap className="text-primary" size={32} />

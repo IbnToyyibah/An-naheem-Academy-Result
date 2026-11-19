@@ -1,4 +1,4 @@
-﻿# API Endpoint Documentation
+# API Endpoint Documentation
 
 Base URL: `https://an-naheem-academy-result-backend.onrender.com`
 
@@ -20,6 +20,7 @@ Private endpoints require Authorization: Bearer <token>.
 | GET | `/admin/dashboard` | Dashboard statistics and recent activities |
 | GET | `/students` | List/search students |
 | POST | `/students` | Create student with optional Cloudinary passport upload |
+| POST | `/students/upload-csv` | Import students from a CSV multipart file (`csvFile`); optional `classId` is the fallback class for rows without a class |
 | GET | `/students/:id` | Get one student |
 | PUT | `/students/:id` | Update student and optionally replace Cloudinary passport |
 | DELETE | `/students/:id` | Delete student |
@@ -33,7 +34,18 @@ Private endpoints require Authorization: Bearer <token>.
 | GET/POST | `/terms` | List or create terms |
 | PUT/DELETE | `/terms/:id` | Update or delete term |
 | POST | `/results/bulk` | Save all subject results for a student |
+| PUT | `/results/student/:studentId` | Update all subject results for a student |
 | GET | `/results/student/:studentId` | Get a student's results by session and term |
+| GET | `/results/csv-template` | Download CSV result template (blank or pre-filled with students) |
+| POST | `/results/upload-csv` | Bulk upload results via CSV for multiple individual students |
+
+## Public student passport upload
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/public/student-passport` | Upload a JPG/PNG passport (`passport`) after verifying `admissionNumber` and `dateOfBirth` (`YYYY-MM-DD`); no login required |
+
+Student CSV files must contain `first_name` and `last_name`, or `student_name`. Optional columns include `admission_number`, `class`, `gender`, `date_of_birth` (`YYYY-MM-DD`), `parent_name`, `parent_phone`, and `parent_email`. Missing admission numbers are generated. Student imports do not include scores; upload results separately using those admission numbers so each result is matched to its student.
 
 ## Parent
 
@@ -58,4 +70,3 @@ Private endpoints require Authorization: Bearer <token>.
 ```
 
 The API validates CA and exam limits, then calculates `total`, `grade`, and `remark`.
-

@@ -123,7 +123,12 @@ export default function ParentResult() {
               </p>
             </div>
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-3 text-[10px]">
+          <div className="mt-3 grid grid-cols-[auto_1fr_1fr_1fr_1fr] items-center gap-3 text-[10px]">
+            {profile?.passport_path ? (
+              <img src={assetUrl(profile.passport_path)} alt="Student passport" className="h-12 w-12 rounded-lg object-cover" />
+            ) : (
+              <div className="h-12 w-12 rounded-lg bg-slate-100" />
+            )}
             <div>
               <span className="block uppercase tracking-[0.14em] text-slate-500">Student</span>
               <span className="font-bold text-slate-900">{profile?.first_name} {profile?.last_name}</span>

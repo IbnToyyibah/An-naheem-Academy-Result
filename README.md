@@ -43,7 +43,7 @@ npm run seed --workspace backend
 - Username: `admin`
 - Password: `admin`
 
-Parent login uses the student's admission number as the ID and `0823` as the default password.
+Parent login uses the student's admission number as the ID and `----` as the default password.
 
 ## Project Structure
 
