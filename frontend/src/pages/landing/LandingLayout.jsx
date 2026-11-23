@@ -60,7 +60,7 @@ export default function LandingLayout({ children }) {
             <img src="/Annaheem.jpeg.png" alt="An-Naheem Academy"
               className="h-12 w-12 object-contain rounded-full ring-2 ring-blue-100 shrink-0 sm:h-16 sm:w-16" />
             <div className="leading-none whitespace-nowrap">
-              <div className="font-extrabold text-xs text-blue-800 tracking-tight sm:text-2xl">AN-NAHEEM ACADEMY</div>
+              <div className="font-extrabold text-sm text-blue-800 tracking-tight sm:text-2xl">AN-NAHEEM ACADEMY</div>
             </div>
           </Link>
 
