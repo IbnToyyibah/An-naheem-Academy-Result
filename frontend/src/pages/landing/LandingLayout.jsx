@@ -53,14 +53,14 @@ export default function LandingLayout({ children }) {
 
       {/* Navbar */}
       <header className={`sticky top-0 z-50 bg-white border-b border-slate-200 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
-        <nav className="mx-auto flex max-w-7xl items-center gap-6 px-6 h-16 relative">
+        <nav className="mx-auto flex max-w-7xl items-center gap-2 px-4 h-16 relative sm:gap-6 sm:px-6">
 
           {/* Brand */}
-          <Link to="/" className="flex items-center gap-3 shrink-0 min-w-0">
+          <Link to="/" className="flex items-center gap-2 shrink-0 min-w-0 sm:gap-3">
             <img src="/Annaheem.jpeg.png" alt="An-Naheem Academy"
-              className="h-16 w-16 object-contain rounded-full ring-2 ring-blue-100 shrink-0" />
-            <div className="leading-none hidden sm:block">
-              <div className="font-extrabold text-2xl text-blue-800 tracking-tight">AN-NAHEEM ACADEMY</div>
+              className="h-12 w-12 object-contain rounded-full ring-2 ring-blue-100 shrink-0 sm:h-16 sm:w-16" />
+            <div className="leading-none whitespace-nowrap">
+              <div className="font-extrabold text-xs text-blue-800 tracking-tight sm:text-2xl">AN-NAHEEM ACADEMY</div>
             </div>
           </Link>
 
