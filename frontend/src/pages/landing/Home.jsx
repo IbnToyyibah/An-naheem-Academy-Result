@@ -4,7 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import {
   BookOpen, Users, Award, Heart, Star, ChevronRight,
   GraduationCap, Landmark, Globe, FlaskConical, Dumbbell,
-  CalendarDays, ArrowRight, CheckCircle2, Quote, Volume2,
+  CalendarDays, ArrowRight, CheckCircle2, Quote,
 } from 'lucide-react';
 import LandingLayout from './LandingLayout.jsx';
 
@@ -280,7 +280,6 @@ function ArabicValuesSection() {
 /* ── Home Component ──────────────────────────────────────────────── */
 export default function Home() {
   const bismillahAudioRef = useRef(null);
-  const [audioNeedsTap, setAudioNeedsTap] = useState(false);
 
   useEffect(() => {
     const audio = bismillahAudioRef.current;
@@ -288,11 +287,8 @@ export default function Home() {
 
     let active = true;
     audio.play()
-      .then(() => {
-        if (active) setAudioNeedsTap(false);
-      })
-      .catch(() => {
-        if (active) setAudioNeedsTap(true);
+      .catch((error) => {
+        if (active) console.warn('Bismillah audio autoplay was blocked or failed.', error);
       });
 
     return () => {
@@ -302,30 +298,11 @@ export default function Home() {
     };
   }, []);
 
-  async function playBismillah() {
-    try {
-      await bismillahAudioRef.current?.play();
-      setAudioNeedsTap(false);
-    } catch {
-      setAudioNeedsTap(true);
-    }
-  }
-
   return (
     <LandingLayout>
       <audio ref={bismillahAudioRef} autoPlay preload="auto">
         <source src="/bismillah-ir-rahman-ir-rahim.flac" type="audio/flac" />
       </audio>
-      {audioNeedsTap && (
-        <button
-          type="button"
-          onClick={playBismillah}
-          className="fixed bottom-5 right-5 z-[60] inline-flex items-center gap-2 rounded-full bg-[#1e3a8a] px-4 py-3 text-sm font-bold text-white shadow-lg hover:bg-blue-800"
-        >
-          <Volume2 size={18} />
-          Play Bismillah
-        </button>
-      )}
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative min-h-[80vh] flex items-center overflow-hidden">
         <div
