@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ImagePlus, Upload } from 'lucide-react';
+import { ArrowLeft, UserRound, Upload } from 'lucide-react';
 import { api } from '../services/api.js';
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
@@ -98,18 +98,25 @@ export default function StudentPassport() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10">
       <section className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-900 hover:underline">
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
+        <div className="mb-6 flex items-center justify-between">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-900 hover:underline">
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+          <img
+            src="/Annaheem.jpeg.png"
+            alt="An-Naheem Academy logo"
+            className="h-12 w-12 object-contain"
+          />
+        </div>
 
         <div className="mb-6 flex items-start gap-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-900">
-            <ImagePlus size={22} />
+            <UserRound size={22} />
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Student BIODATA</h1>
             <p className="mt-1 text-sm text-slate-600">
-              Complete the student details and add a passport photo. New student IDs will be registered.
+              Complete the student details and add a passport photo.
             </p>
           </div>
         </div>
@@ -200,7 +207,7 @@ export default function StudentPassport() {
           )}
 
           <p className="m-0 text-xs leading-relaxed text-slate-500">
-            The passport preview is shown above before submission. The saved photo will appear on the student result.
+            The saved photo will appear on the student result.
           </p>
 
           <button
