@@ -313,7 +313,7 @@ export default function Home() {
 
   return (
     <LandingLayout>
-      <audio ref={bismillahAudioRef} preload="auto">
+      <audio ref={bismillahAudioRef} autoPlay preload="auto">
         <source src="/bismillah-ir-rahman-ir-rahim.flac" type="audio/flac" />
       </audio>
       {audioNeedsTap && (
