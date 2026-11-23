@@ -98,14 +98,14 @@ export default function StudentPassport() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10">
       <section className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-900 hover:underline">
-            <ArrowLeft size={16} /> Back to Home
-          </Link>
+        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-900 hover:underline">
+          <ArrowLeft size={16} /> Back to Home
+        </Link>
+        <div className="mb-4 flex justify-center">
           <img
             src="/Annaheem.jpeg.png"
             alt="An-Naheem Academy logo"
-            className="h-12 w-12 object-contain"
+            className="h-24 w-24 object-contain"
           />
         </div>
 
@@ -114,7 +114,7 @@ export default function StudentPassport() {
             <UserRound size={22} />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Student BIODATA</h1>
+            <h1 className="text-xl font-bold text-[#4169E1]">Student BIODATA</h1>
             <p className="mt-1 text-sm text-slate-600">
               Complete the student details and add a passport photo.
             </p>

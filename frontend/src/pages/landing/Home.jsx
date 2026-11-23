@@ -4,7 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import {
   BookOpen, Users, Award, Heart, Star, ChevronRight,
   GraduationCap, Landmark, Globe, FlaskConical, Dumbbell,
-  CalendarDays, ArrowRight, CheckCircle2, Quote,
+  CalendarDays, ArrowRight, CheckCircle2, Quote, Volume2,
 } from 'lucide-react';
 import LandingLayout from './LandingLayout.jsx';
 
@@ -279,24 +279,68 @@ function ArabicValuesSection() {
 
 /* ── Home Component ──────────────────────────────────────────────── */
 export default function Home() {
+  const bismillahAudioRef = useRef(null);
+  const [audioNeedsTap, setAudioNeedsTap] = useState(false);
+
+  useEffect(() => {
+    const audio = bismillahAudioRef.current;
+    if (!audio) return undefined;
+
+    let active = true;
+    audio.play()
+      .then(() => {
+        if (active) setAudioNeedsTap(false);
+      })
+      .catch(() => {
+        if (active) setAudioNeedsTap(true);
+      });
+
+    return () => {
+      active = false;
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, []);
+
+  async function playBismillah() {
+    try {
+      await bismillahAudioRef.current?.play();
+      setAudioNeedsTap(false);
+    } catch {
+      setAudioNeedsTap(true);
+    }
+  }
+
   return (
     <LandingLayout>
-
+      <audio ref={bismillahAudioRef} preload="auto">
+        <source src="/bismillah-ir-rahman-ir-rahim.flac" type="audio/flac" />
+      </audio>
+      {audioNeedsTap && (
+        <button
+          type="button"
+          onClick={playBismillah}
+          className="fixed bottom-5 right-5 z-[60] inline-flex items-center gap-2 rounded-full bg-[#1e3a8a] px-4 py-3 text-sm font-bold text-white shadow-lg hover:bg-blue-800"
+        >
+          <Volume2 size={18} />
+          Play Bismillah
+        </button>
+      )}
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative min-h-[88vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/Background image.png')" }}
         />
         <div className="absolute inset-0 bg-white/75" />
 
-        <div className="relative mx-auto max-w-7xl px-5 py-16 grid lg:grid-cols-2 gap-12 items-center w-full">
+        <div className="relative mx-auto max-w-7xl px-5 py-10 sm:py-12 grid lg:grid-cols-2 gap-10 items-center w-full">
           {/* Left */}
           <div>
             <motion.div
               initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 bg-[#1e3a8a]/10 border border-[#1e3a8a]/20 text-[#1e3a8a] px-3.5 py-1.5 rounded text-xs font-semibold mb-6 tracking-wide"
+              className="inline-flex items-center gap-2 bg-[#1e3a8a]/10 border border-[#1e3a8a]/20 text-[#1e3a8a] px-3.5 py-1.5 rounded text-xs font-semibold mb-4 tracking-wide"
             >
               <Star size={11} className="fill-[#1e3a8a] text-[#1e3a8a]" />
               Excellence &middot; Faith &middot; Character
@@ -305,7 +349,7 @@ export default function Home() {
             <motion.h1
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl xl:text-[56px] font-bold text-slate-900 leading-[1.12] mb-5 tracking-tight"
+              className="text-4xl sm:text-5xl xl:text-[56px] font-bold text-slate-900 leading-[1.12] mb-4 tracking-tight"
             >
               Shaping Minds,<br />
               <span className="text-[#1e3a8a]">Inspiring Souls</span>
@@ -314,7 +358,7 @@ export default function Home() {
             <motion.p
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2 }}
-              className="text-black font-bold text-base leading-relaxed mb-8 max-w-md"
+              className="text-black font-bold text-base leading-relaxed mb-6 max-w-md"
             >
               An-Naheem Academy delivers world-class JSS and SS education rooted in Islamic values —
               preparing students to excel in both Deen and Dunya.
@@ -342,7 +386,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-wrap gap-6 mt-10 pt-8 border-t border-slate-200"
+              className="flex flex-wrap gap-6 mt-8 pt-6 border-t border-slate-200"
             >
               {STATS.map(({ value, label }) => (
                 <div key={label}>
