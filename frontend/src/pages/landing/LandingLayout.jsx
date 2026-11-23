@@ -13,6 +13,13 @@ const NAV_LINKS = [
   { to: '/contact', label: 'Contact' },
 ];
 
+const MOBILE_NAV_LINKS = [
+  ...NAV_LINKS,
+  { to: '/admin-login', label: 'Admin' },
+  { to: '/parent-login', label: 'Parent Login' },
+  { to: '/student-passport', label: 'BIODATA' },
+];
+
 export default function LandingLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -121,7 +128,7 @@ export default function LandingLayout({ children }) {
               exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
               className="overflow-hidden border-t border-slate-100 md:hidden bg-white">
               <div className="px-5 py-4 grid gap-1.5">
-                {NAV_LINKS.map(({ to, label }, i) => (
+                {MOBILE_NAV_LINKS.map(({ to, label }, i) => (
                   <motion.div key={to} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}>
                     <NavLink to={to} end={to === '/'}
@@ -133,20 +140,6 @@ export default function LandingLayout({ children }) {
                     </NavLink>
                   </motion.div>
                 ))}
-                <div className="grid grid-cols-2 gap-2 mt-2 pt-3 border-t border-slate-100">
-                  <Link to="/admin-login"
-                    className="col-span-2 text-center py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-700 hover:bg-blue-50 hover:border-blue-300 hover:text-[#1e3a8a] transition-all">
-                    Admin
-                  </Link>
-                  <Link to="/parent-login"
-                    className="flex items-center justify-center gap-1 text-center py-2.5 text-xs font-semibold bg-[#1e3a8a] text-white rounded-lg hover:bg-[#1e40af] transition-all">
-                    Parent Login
-                  </Link>
-                  <Link to="/student-passport"
-                    className="flex items-center justify-center gap-1 text-center py-2.5 text-xs font-semibold bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition-all">
-                    <Upload size={14} /> BIODATA
-                  </Link>
-                </div>
               </div>
             </motion.div>
           )}
