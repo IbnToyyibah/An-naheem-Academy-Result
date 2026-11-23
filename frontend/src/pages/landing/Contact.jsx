@@ -238,7 +238,7 @@ export default function Contact() {
         <div className="mx-auto max-w-3xl text-center">
           <FadeIn>
             <p className="text-slate-500 text-sm mb-4">Have a general question? Check our</p>
-            <a href="/admissions" className="inline-flex items-center gap-2 border border-[#1e3a8a] text-[#1e3a8a] font-bold px-6 py-2.5 rounded-xl hover:bg-blue-50 transition-colors text-sm">
+            <a href="/admissions#faqs" className="inline-flex items-center gap-2 border border-[#1e3a8a] text-[#1e3a8a] font-bold px-6 py-2.5 rounded-xl hover:bg-blue-50 transition-colors text-sm">
               Admissions FAQs →
             </a>
           </FadeIn>

@@ -76,10 +76,15 @@ const FAQS = [
 
 function FaqItem({ q, a, index }) {
   const [open, setOpen] = useState(false);
+  const answerId = `admission-faq-answer-${index}`;
   return (
     <FadeIn delay={index * 0.05}>
       <div className="border border-slate-200 rounded-xl overflow-hidden">
-        <button onClick={() => setOpen(v => !v)}
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={answerId}
+          onClick={() => setOpen(v => !v)}
           className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-slate-50 transition-colors">
           <span className="font-medium text-sm text-slate-800 leading-snug">{q}</span>
           <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} className="shrink-0 text-slate-400">
@@ -88,7 +93,7 @@ function FaqItem({ q, a, index }) {
         </button>
         <AnimatePresence initial={false}>
           {open && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
+            <motion.div id={answerId} initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
               <div className="px-5 pb-4 pt-1 text-sm text-slate-500 leading-relaxed border-t border-slate-100 bg-slate-50">{a}</div>
             </motion.div>
@@ -104,30 +109,30 @@ export default function Admissions() {
     <LandingLayout>
 
       {/* HERO */}
-      <section className="relative bg-[#0f172a] text-white py-20 px-5 overflow-hidden">
+      <section className="relative bg-[#0f172a] text-white px-4 py-12 sm:px-5 sm:py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-15"
           style={{ backgroundImage: 'radial-gradient(circle at 25% 55%, #1e3a8a 0%, transparent 55%), radial-gradient(circle at 80% 15%, #0ea5e9 0%, transparent 45%)' }} />
-        <div className="mx-auto max-w-4xl text-center relative">
+        <div className="relative mx-auto max-w-4xl px-1 text-center sm:px-0">
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 text-amber-300 text-xs font-semibold uppercase tracking-widest px-3.5 py-1.5 rounded mb-4">
+            className="mx-auto inline-flex max-w-full items-center justify-center gap-2 rounded border border-white/25 bg-white/10 px-3 py-1.5 text-center text-[10px] font-bold uppercase leading-relaxed tracking-wider text-white sm:mb-4 sm:px-3.5 sm:text-xs sm:tracking-widest">
             <AlertCircle size={12} /> Admissions Open — 2025/2026 Session
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
-            Begin Your Child's Journey<br />With An-Naheem Academy
+            className="mb-4 mt-4 break-words text-[1.75rem] font-bold leading-tight sm:mt-0 sm:text-4xl">
+            Begin Your Child's Journey<br className="hidden sm:block" />With An-Naheem Academy
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-slate-400 text-sm leading-relaxed max-w-xl mx-auto mb-7">
+            className="mx-auto mb-6 max-w-xl text-sm leading-relaxed text-slate-400 sm:mb-7">
             Everything you need to know — admission process, requirements, fees, and answers to common questions.
           </motion.p>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap gap-3 justify-center">
+            className="mx-auto flex w-full max-w-sm flex-col justify-center gap-3 sm:w-auto sm:max-w-none sm:flex-row">
             <a href="#process"
-              className="inline-flex items-center gap-2 bg-[#1e3a8a] text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-[#1e40af] transition text-sm shadow-md">
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#1e3a8a] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#1e40af] sm:w-auto">
               View Process <ChevronRight size={14} />
             </a>
             <a href="#fees"
-              className="inline-flex items-center gap-2 bg-white/8 border border-white/15 text-white font-medium px-5 py-2.5 rounded-lg hover:bg-white/12 transition text-sm">
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/12 sm:w-auto">
               See Fee Schedule
             </a>
           </motion.div>
@@ -245,7 +250,7 @@ export default function Admissions() {
       </section>
 
       {/* FAQS */}
-      <section className="py-14 px-5 bg-slate-50 border-t border-slate-100">
+      <section id="faqs" className="scroll-mt-24 border-t border-slate-100 bg-slate-50 px-5 py-14">
         <div className="mx-auto max-w-3xl">
           <FadeIn><SectionHead tag="FAQs" title="Frequently Asked Questions" sub="Quick answers to the questions parents ask most." /></FadeIn>
           <div className="grid gap-2.5">

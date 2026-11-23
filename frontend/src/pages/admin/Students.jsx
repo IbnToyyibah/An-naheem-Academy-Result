@@ -19,12 +19,12 @@ const iconButton = 'inline-grid h-[38px] w-[38px] place-items-center rounded-[7p
 
 function normalizeAdmissionNumber(value = '') {
   const compact = String(value).trim().replace(/\\/g, '/');
-  const match = compact.match(/^ana[\s/-]*(jss|ss)\s*([1-3])[\s/-]*(\d{1,3})[\s/-]*([a-z])$/i);
+  const match = compact.match(/^ana[\s/-]*(jss|ss)\s*([1-3])[\s/-]*(\d+)[\s/-]*[a-z]?$/i);
 
   if (!match) return compact.replace(/\s+/g, '');
 
   const prefix = match[1].toUpperCase();
-  return `ANA/${prefix}${match[2]}/${match[3].padStart(3, '0')}${match[4].toLowerCase()}`;
+  return `ANA/${prefix}${match[2]}/${match[3].padStart(3, '0')}`;
 }
 
 export default function Students() {
@@ -68,7 +68,7 @@ export default function Students() {
       const className = targetClass?.class_name || '';
       const m = className.match(/(JSS|SS)\s*([1-3])/i);
       const code = m ? `${m[1].toUpperCase()}${m[2]}` : 'JSS1';
-      const regex = new RegExp(`^ANA\/${code}\/(\\d{3})([a-z])?$`, 'i');
+      const regex = new RegExp(`^ANA\/${code}\/(\\d{3,})([a-z])?$`, 'i');
 
       let maxNum = 0;
       studentList.forEach((st) => {
@@ -81,8 +81,7 @@ export default function Students() {
 
       const nextNum = maxNum + 1;
       const padded = String(nextNum).padStart(3, '0');
-      const letter = String.fromCharCode(97 + ((nextNum - 1) % 26));
-      return `ANA/${code}/${padded}${letter}`;
+      return `ANA/${code}/${padded}`;
     }
     return '';
   }, [classes, students]);
@@ -365,10 +364,10 @@ export default function Students() {
             </div>
             <div className="relative">
               <input
-                placeholder="e.g. ANA/JSS2/001a"
+                placeholder="e.g. ANA/JSS2/001"
                 required
                 pattern="[Aa][Nn][Aa]\/(?:[Jj][Ss][Ss]|[Ss][Ss])[1-3]\/[0-9]{3}[a-zA-Z]"
-                title="Use the format ANA/JSS1/001a or ANA/JSS2/001a"
+                title="Use the format ANA/JSS1/001 or ANA/JSS2/001"
                 value={form.admission_number}
                 onChange={(e) => setForm({ ...form, admission_number: e.target.value })}
                 onBlur={(e) => setForm({ ...form, admission_number: normalizeAdmissionNumber(e.target.value) })}

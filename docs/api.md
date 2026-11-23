@@ -27,7 +27,7 @@ Private endpoints require Authorization: Bearer <token>.
 | DELETE | `/students/:id/passport` | Delete student passport |
 | GET/POST | `/classes` | List or create classes |
 | PUT/DELETE | `/classes/:id` | Update or delete a class |
-| GET/POST | `/subjects` | List or create subjects |
+| GET/POST | `/subjects` | List or create subjects; POST accepts `class_levels` (`junior`, `senior`, or both) |
 | PUT/DELETE | `/subjects/:id` | Update or delete a subject |
 | GET/POST | `/sessions` | List or create academic sessions |
 | PUT/DELETE | `/sessions/:id` | Update or delete session |
@@ -43,7 +43,12 @@ Private endpoints require Authorization: Bearer <token>.
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| POST | `/public/student-passport` | Upload a JPG/PNG passport (`passport`) after verifying `admissionNumber` and `dateOfBirth` (`YYYY-MM-DD`); no login required |
+| GET | `/public/classes` | List available classes for student BIODATA registration; no login required |
+| POST | `/public/student-passport` | Submit student BIODATA (`fullName`, `classId`, `gender`, `admissionNumber`) and JPG/PNG passport (`passport`); registers a student when the ID is new, no login required |
+
+Admission numbers use `ANA/JSS1/001` through `ANA/SS3/001` format without a trailing letter. Before deploying this format, stop the backend and run `npm run migrate:admission-numbers --workspace backend` to review the class counts, then rerun with `-- --apply` to renumber students sequentially from `001` in each class.
+
+Subjects are assigned to `junior`, `senior`, or both class levels. JSS subjects remain junior-only except English Language, Mathematics, and Agricultural Science, which are shared. SS subjects include English Language, Mathematics, Biology, Chemistry, Physics, Further Mathematics, Agricultural Science, Commerce, Accounting, Economics, Financial Accounting, Marketing, Literature in English, Government, and Yoruba.
 
 Student CSV files must contain `first_name` and `last_name`, or `student_name`. Optional columns include `admission_number`, `class`, `gender`, `date_of_birth` (`YYYY-MM-DD`), `parent_name`, `parent_phone`, and `parent_email`. Missing admission numbers are generated. Student imports do not include scores; upload results separately using those admission numbers so each result is matched to its student.
 

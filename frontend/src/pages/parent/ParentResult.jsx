@@ -5,7 +5,6 @@ import { api } from '../../services/api.js';
 import EmptyState from '../../components/EmptyState.jsx';
 import { assetUrl } from '../../services/api.js';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { defaultSubjects } from '../../utils/subjects.js';
 import StatCard from '../../components/StatCard.jsx';
 
 export default function ParentResult() {
@@ -16,6 +15,13 @@ export default function ParentResult() {
   const [result, setResult] = useState(user?.results || { results: [], summary: {} });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(!user && !user?.results);
+  const classLevel = /^SS\s*[1-3]$/i.test(profile?.class_name || '') ? 'senior' : 'junior';
+  const availableSubjectNames = lookups.subjects
+    .filter((subject) => (subject.class_levels || ['junior']).includes(classLevel))
+    .map((subject) => subject.subject_name);
+  const subjectNames = availableSubjectNames.length
+    ? availableSubjectNames
+    : (result.results || []).map((row) => row.subject_name).filter(Boolean);
 
   useEffect(() => {
     let active = true;
@@ -266,9 +272,7 @@ export default function ParentResult() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(
-                    (lookups.subjects && lookups.subjects.length ? lookups.subjects.map(s => s.subject_name) : defaultSubjects) || []
-                  ).map((subjectName, index) => {
+                  {subjectNames.map((subjectName, index) => {
                     const row = (result.results || []).find((r) => r.subject_name === subjectName) || {};
                     return (
                       <tr key={row.id || subjectName} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'} transition hover:bg-slate-100/80`}>

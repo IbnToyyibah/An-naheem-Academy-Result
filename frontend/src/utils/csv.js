@@ -247,7 +247,7 @@ function escapeCsvCell(val) {
   return str;
 }
 
-export function buildCsvTemplateContent({ students = [], subjects = [], includeStudents = true }) {
+export function buildCsvTemplateContent({ students = [], subjects = [], includeStudents = true, className = 'JSS 1' }) {
   const headers = [
     'admission_number',
     'student_name',
@@ -267,57 +267,43 @@ export function buildCsvTemplateContent({ students = [], subjects = [], includeS
       const adm = student.admission_number;
       const name = `${student.first_name || ''} ${student.last_name || ''}`.trim();
       const className = student.class_id?.class_name || student.class_name || '';
+      const classLevel = /^SS\s*[1-3]$/i.test(className) ? 'senior' : 'junior';
 
-      subjects.forEach((subject) => {
-        lines.push([
-          escapeCsvCell(adm),
-          escapeCsvCell(name),
-          escapeCsvCell(className),
-          escapeCsvCell(subject.subject_name),
-          '',
-          '',
-          '',
-          '',
-          ''
-        ].join(','));
-      });
+      subjects
+        .filter((subject) => (subject.class_levels || ['junior']).includes(classLevel))
+        .forEach((subject) => {
+          lines.push([
+            escapeCsvCell(adm),
+            escapeCsvCell(name),
+            escapeCsvCell(className),
+            escapeCsvCell(subject.subject_name),
+            '',
+            '',
+            '',
+            '',
+            ''
+          ].join(','));
+        });
     });
   } else {
-    lines.push([
-      'ANA/JSS1/001a',
-      'Atofarati Muhd Bashar',
-      'JSS 1',
-      'Mathematics',
-      '18',
-      '17',
-      '50',
-      '95',
-      'Outstanding academic performance'
-    ].map(escapeCsvCell).join(','));
+    const classCodeMatch = String(className).match(/^(JSS|SS)\s*([1-3])$/i);
+    const classCode = classCodeMatch ? `${classCodeMatch[1].toUpperCase()}${classCodeMatch[2]}` : 'JSS1';
+    const classLevel = classCode.startsWith('SS') ? 'senior' : 'junior';
+    const applicableSubjects = subjects.filter((subject) => (subject.class_levels || ['junior']).includes(classLevel));
 
-    lines.push([
-      'ANA/JSS1/001a',
-      'Atofarati Muhd Bashar',
-      'JSS 1',
-      'English Language',
-      '16',
-      '15',
-      '48',
-      '95',
-      'Outstanding academic performance'
-    ].map(escapeCsvCell).join(','));
-
-    lines.push([
-      'ANA/JSS1/002b',
-      'Abdullahi Yusuf',
-      'JSS 1',
-      'Mathematics',
-      '14',
-      '15',
-      '42',
-      '88',
-      'Good effort, keep it up'
-    ].map(escapeCsvCell).join(','));
+    applicableSubjects.forEach((subject) => {
+      lines.push([
+        `ANA/${classCode}/001`,
+        'Sample Student',
+        className,
+        subject.subject_name,
+        '',
+        '',
+        '',
+        '',
+        ''
+      ].map(escapeCsvCell).join(','));
+    });
   }
 
   return lines.join('\r\n');

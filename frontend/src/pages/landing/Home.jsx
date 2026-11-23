@@ -204,7 +204,6 @@ function ArabicValuesSection() {
 
         {/* Pause hint */}
         <p className="text-center text-xs text-slate-400 mb-5 italic">
-          Hover any card to pause the shuffle
         </p>
 
         <motion.ul

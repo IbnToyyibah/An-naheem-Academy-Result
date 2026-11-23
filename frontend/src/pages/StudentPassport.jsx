@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ImagePlus, Upload } from 'lucide-react';
 import { api } from '../services/api.js';
@@ -6,11 +6,43 @@ import { api } from '../services/api.js';
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 export default function StudentPassport() {
+  const [fullName, setFullName] = useState('');
+  const [classId, setClassId] = useState('');
+  const [gender, setGender] = useState('');
   const [admissionNumber, setAdmissionNumber] = useState('');
+  const [classes, setClasses] = useState([]);
+  const [classLoadError, setClassLoadError] = useState('');
   const [passport, setPassport] = useState(null);
+  const [passportPreview, setPassportPreview] = useState('');
   const [message, setMessage] = useState('');
   const [success, setSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    api('/public/classes', { authRedirect: false })
+      .then((items) => {
+        if (active) setClasses(items);
+      })
+      .catch((error) => {
+        if (active) setClassLoadError(error.message || 'Unable to load classes.');
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!passport) {
+      setPassportPreview('');
+      return undefined;
+    }
+
+    const previewUrl = URL.createObjectURL(passport);
+    setPassportPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [passport]);
 
   function choosePassport(event) {
     const file = event.target.files?.[0] || null;
@@ -37,13 +69,16 @@ export default function StudentPassport() {
     event.preventDefault();
     setMessage('');
     if (!passport) {
-      setMessage('Choose a JPG or PNG passport image to upload.');
+      setMessage('Choose a JPG or PNG passport image.');
       return;
     }
     setUploading(true);
 
     try {
       const formData = new FormData();
+      formData.append('fullName', fullName.trim());
+      formData.append('classId', classId);
+      formData.append('gender', gender);
       formData.append('admissionNumber', admissionNumber.trim());
       formData.append('passport', passport);
       const result = await api('/public/student-passport', {
@@ -72,9 +107,9 @@ export default function StudentPassport() {
             <ImagePlus size={22} />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Upload Student Passport</h1>
+            <h1 className="text-xl font-bold text-slate-900">Student BIODATA</h1>
             <p className="mt-1 text-sm text-slate-600">
-              Enter the student’s ID to link the photo to their record.
+              Complete the student details and add a passport photo. New student IDs will be registered.
             </p>
           </div>
         </div>
@@ -86,14 +121,57 @@ export default function StudentPassport() {
               required
               value={admissionNumber}
               onChange={(event) => setAdmissionNumber(event.target.value)}
-              placeholder="ANA/JSS1/001a"
+              placeholder="ANA/JSS1/001"
               autoComplete="off"
               className="rounded-lg border border-slate-300 px-3 py-2.5"
             />
           </label>
 
           <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-            Passport photo
+            Full Name
+            <input
+              required
+              value={fullName}
+              onChange={(event) => setFullName(event.target.value)}
+              placeholder="Student’s full name"
+              autoComplete="name"
+              className="rounded-lg border border-slate-300 px-3 py-2.5"
+            />
+          </label>
+
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            Class
+            <select
+              required
+              value={classId}
+              onChange={(event) => setClassId(event.target.value)}
+              disabled={!classes.length}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 disabled:bg-slate-100"
+            >
+              <option value="">{classLoadError ? 'Classes unavailable' : 'Select class'}</option>
+              {classes.map((item) => (
+                <option key={item.id} value={item.id}>{item.class_name}</option>
+              ))}
+            </select>
+            {classLoadError && <span className="text-xs font-normal text-red-600">{classLoadError}</span>}
+          </label>
+
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            Gender
+            <select
+              required
+              value={gender}
+              onChange={(event) => setGender(event.target.value)}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2.5"
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </label>
+
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            Student Passport
             <input
               required
               type="file"
@@ -104,6 +182,17 @@ export default function StudentPassport() {
             <span className="text-xs font-normal text-slate-500">JPG or PNG, maximum 2 MB.</span>
           </label>
 
+          {passportPreview && (
+            <div className="grid justify-items-start gap-2">
+              <span className="text-sm font-semibold text-slate-700">Passport preview</span>
+              <img
+                src={passportPreview}
+                alt="Preview of the student passport"
+                className="h-36 w-36 rounded-xl border border-slate-200 bg-slate-50 object-cover"
+              />
+            </div>
+          )}
+
           {message && (
             <p className={`m-0 rounded-lg px-3 py-2 text-sm font-semibold ${success ? 'bg-emerald-50 text-emerald-800' : 'bg-red-50 text-red-700'}`} role="status">
               {message}
@@ -111,16 +200,16 @@ export default function StudentPassport() {
           )}
 
           <p className="m-0 text-xs leading-relaxed text-slate-500">
-            The uploaded photo is attached to the verified student record and will be shown on their result.
+            The passport preview is shown above before submission. The saved photo will appear on the student result.
           </p>
 
           <button
             type="submit"
-            disabled={uploading || success}
+            disabled={uploading || success || !classes.length}
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Upload size={17} />
-            {uploading ? 'Uploading...' : success ? 'Passport uploaded' : 'Upload Passport'}
+            {uploading ? 'Submitting...' : success ? 'BIODATA submitted' : 'Submit BIODATA'}
           </button>
         </form>
       </section>

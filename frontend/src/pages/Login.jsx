@@ -53,7 +53,7 @@ export default function Login({ role }) {
           ) : (
             <label className="grid gap-[5px] font-bold text-xs text-[#344054]">
               Admission Number
-              <input required placeholder="ANA/JSS1/001a" value={form.admissionNumber} onChange={(e) => setForm({ ...form, admissionNumber: e.target.value })} />
+              <input required placeholder="ANA/JSS1/001" value={form.admissionNumber} onChange={(e) => setForm({ ...form, admissionNumber: e.target.value })} />
             </label>
           )}
           <label className="grid gap-[5px] font-bold text-xs text-[#344054]">

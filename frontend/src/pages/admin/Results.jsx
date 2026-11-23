@@ -49,6 +49,17 @@ export default function Results() {
   const [showPreviewTable, setShowPreviewTable] = useState(true);
   const fileInputRef = useRef(null);
 
+  const selectedStudent = lookups.students.find((student) => student.id === filters.studentId);
+  const selectedClass = lookups.classes.find((item) =>
+    item.id === (selectedStudent?.class_id?.id || selectedStudent?.class_id)
+  );
+  const selectedClassName = selectedStudent?.class_name || selectedClass?.class_name || '';
+  const selectedClassLevel = /^SS\s*[1-3]$/i.test(selectedClassName) ? 'senior' : 'junior';
+  const visibleSubjects = useMemo(
+    () => lookups.subjects.filter((subject) => (subject.class_levels || ['junior']).includes(selectedClassLevel)),
+    [lookups.subjects, selectedClassLevel]
+  );
+
   useEffect(() => {
     Promise.all([
       api('/students'),
@@ -175,7 +186,7 @@ export default function Results() {
       ...filters,
       attendance: filters.attendance !== '' ? filters.attendance : existingAttendance,
       principalRemark: filters.principalRemark !== '' ? filters.principalRemark : existingPrincipal,
-      scores: lookups.subjects
+      scores: visibleSubjects
         .filter((subject) => {
           const sid = subject.id;
           const input = scores[sid] || {};
@@ -228,7 +239,8 @@ export default function Results() {
       const csvContent = buildCsvTemplateContent({
         students: filteredStudents,
         subjects: lookups.subjects,
-        includeStudents
+        includeStudents,
+        className: lookups.classes.find((item) => item.id === csvClassFilter)?.class_name || 'JSS 1'
       });
 
       const sessionObj = lookups.sessions.find((s) => s.id === csvSessionId);
@@ -880,7 +892,7 @@ export default function Results() {
                 </tr>
               </thead>
               <tbody>
-                {lookups.subjects.map((subject) => (
+                {visibleSubjects.map((subject) => (
                   <tr key={subject.id}>
                     <td data-label="Subject">{subject.subject_name}</td>
                     <td data-label="1st CA">

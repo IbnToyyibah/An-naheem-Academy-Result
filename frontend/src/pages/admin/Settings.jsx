@@ -15,6 +15,7 @@ const iconButton = 'inline-grid h-[38px] w-[38px] place-items-center rounded-[7p
 export default function Settings() {
   const [data, setData] = useState({});
   const [drafts, setDrafts] = useState({});
+  const [subjectLevel, setSubjectLevel] = useState('junior');
 
   async function load() {
     const entries = await Promise.all(resources.map(async ([path]) => [path, await api(`/${path}`)]));
@@ -27,7 +28,11 @@ export default function Settings() {
 
   async function add(path, column) {
     if (!drafts[path]) return;
-    await api(`/${path}`, { method: 'POST', body: JSON.stringify({ [column]: drafts[path] }) });
+    const payload = { [column]: drafts[path] };
+    if (path === 'subjects') {
+      payload.class_levels = subjectLevel === 'both' ? ['junior', 'senior'] : [subjectLevel];
+    }
+    await api(`/${path}`, { method: 'POST', body: JSON.stringify(payload) });
     setDrafts({ ...drafts, [path]: '' });
     await load();
   }
@@ -48,14 +53,31 @@ export default function Settings() {
         {resources.map(([path, column, title]) => (
           <section className={panel} key={path}>
             <h2>{title}</h2>
-            <div className="mb-3 grid grid-cols-[1fr_auto] gap-2">
+            <div className={`mb-3 grid gap-2 ${path === 'subjects' ? 'grid-cols-1 sm:grid-cols-[1fr_auto_auto]' : 'grid-cols-[1fr_auto]'}`}>
               <input value={drafts[path] || ''} onChange={(e) => setDrafts({ ...drafts, [path]: e.target.value })} placeholder={`New ${title.toLowerCase()}`} />
+              {path === 'subjects' && (
+                <select
+                  value={subjectLevel}
+                  onChange={(event) => setSubjectLevel(event.target.value)}
+                  aria-label="Subject class level"
+                  className="min-w-0"
+                >
+                  <option value="junior">JSS only</option>
+                  <option value="senior">SS only</option>
+                  <option value="both">JSS and SS</option>
+                </select>
+              )}
               <button className={iconButton} onClick={() => add(path, column)} aria-label={`Add ${title}`}><Plus size={18} /></button>
             </div>
             <div className="flex flex-wrap gap-2">
               {(data[path] || []).map((item) => (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-[9px] py-[7px] font-bold" key={item.id}>
                   {item[column]}
+                  {path === 'subjects' && (
+                    <span className="text-[10px] font-semibold text-slate-500">
+                      {(item.class_levels || ['junior']).map((level) => level === 'junior' ? 'JSS' : 'SS').join(' + ')}
+                    </span>
+                  )}
                   <button className="grid place-items-center border-0 bg-transparent text-accent" onClick={() => remove(path, item.id)} aria-label="Delete"><Trash2 size={14} /></button>
                 </span>
               ))}
