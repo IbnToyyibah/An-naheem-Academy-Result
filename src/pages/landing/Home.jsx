@@ -280,8 +280,31 @@ function ArabicValuesSection() {
 
 /* ── Home Component ──────────────────────────────────────────────── */
 export default function Home() {
+  const bismillahAudioRef = useRef(null);
+
+  useEffect(() => {
+    const audio = bismillahAudioRef.current;
+    if (!audio) return undefined;
+
+    const playOnPageClick = () => {
+      audio.play().catch((error) => {
+        console.warn('Bismillah audio could not play after a page click.', error);
+      });
+    };
+
+    document.addEventListener('click', playOnPageClick, { once: true });
+    return () => {
+      document.removeEventListener('click', playOnPageClick);
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, []);
+
   return (
     <LandingLayout>
+      <audio ref={bismillahAudioRef} preload="auto">
+        <source src="/bismillah-ir-rahman-ir-rahim.flac" type="audio/flac" />
+      </audio>
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative min-h-[88vh] flex items-center overflow-hidden">

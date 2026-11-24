@@ -285,14 +285,15 @@ export default function Home() {
     const audio = bismillahAudioRef.current;
     if (!audio) return undefined;
 
-    let active = true;
-    audio.play()
-      .catch((error) => {
-        if (active) console.warn('Bismillah audio autoplay was blocked or failed.', error);
+    const playOnPageClick = () => {
+      audio.play().catch((error) => {
+        console.warn('Bismillah audio could not play after a page click.', error);
       });
+    };
 
+    document.addEventListener('click', playOnPageClick, { once: true });
     return () => {
-      active = false;
+      document.removeEventListener('click', playOnPageClick);
       audio.pause();
       audio.currentTime = 0;
     };
@@ -300,7 +301,7 @@ export default function Home() {
 
   return (
     <LandingLayout>
-      <audio ref={bismillahAudioRef} autoPlay preload="auto">
+      <audio ref={bismillahAudioRef} preload="auto">
         <source src="/bismillah-ir-rahman-ir-rahim.flac" type="audio/flac" />
       </audio>
       {/* ── HERO ─────────────────────────────────────────────────── */}
